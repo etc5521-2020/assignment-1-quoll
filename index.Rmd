@@ -13,6 +13,25 @@ output:
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
 
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache=FALSE, message=FALSE, warning=FALSE)
+
+library(tidyverse)
+library(dplyr)
+```
+
+```{r write-data, eval = FALSE}
+tuesdata <- tidytuesdayR::tt_load('2020-07-14')
+astronauts_origin <- tuesdata$astronauts
+
+write.csv(astronauts_origin, here::here("data", "astronauts.csv"))
+```
+
+```{r read-data}
+astronauts <- read.csv(here::here("data", "astronauts.csv"))
+```
+
+
 # Introduction and motivation
 
 [FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
