@@ -38,6 +38,13 @@ astronauts <- read.csv(here::here("data", "astronauts.csv"))
 
 # Data description
 
+The data which are used for analysing in this report are from the astronaut database. Because only one website could not contain comprehensive and up-to-date astronautic information. Therefore, this database was collected from NASA, Roscosmos, and fun-made websites, which includes information about the space mission before 15 January 2020. Furthermore, this data contains 24 different types of information about 1277 astronauts which are name, sex, year of birth, nationality, military status, the name and year of selection program, information about each mission implemented by astronaut such as year, title, ascend and decent shuttle names, duration of mission and extravehicular activity (EVAs). The version of data has been updated on 14 July 2020, which contains the astronautic information from 1961 to 2019. The data used in this report was read from the TidyTuesdayR package, and it has been saved in a new csv file called astronaut for later use.
+
+By browsing the whole dataset and using the glimpse function to observe the variables and the corresponding classes by R, this report decides to apply this dataset into analysing the development of the astronautic industry. Meanwhile, according to the observation, the report would try to use several important and useful variables to explore the development of the astronautic industry as much as possible, like the year, number, and duration of missions, proportion of space travellers, the number of extravehicular activity and the gender of astronauts. In addition, some missing values and inappropriate classes of variables have been found, which would be considered in the following analysing part.
+
+Therefore, the development of the world astronautic exploration with time from the first spaceflight launched would be the primary question of this report. In addition, the report would also focus on three secondary questions. Firstly, When does astronautic exploration become more competitive? Secondly, How is the tech of astronautic exploration development? Thirdly,  Do females also play an important role in astronautic exploration, when does the first female astronaut appear in international astronautic exploration?
+
+
 # Analysis and findings
 
 [FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
