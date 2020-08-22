@@ -28,7 +28,7 @@ write.csv(astronauts_origin, here::here("data", "astronauts.csv"))
 ```
 
 ```{r read-data}
-astronauts <- read.csv(here::here("data", "astronauts.csv"))
+astronauts <- read.csv(here::here("data/astronauts.csv"))
 ```
 
 
@@ -48,5 +48,25 @@ Therefore, the development of the world astronautic exploration with time from t
 # Analysis and findings
 
 [FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
+
+## duration of missions
+
+## Number of extravehicular (EVA) operations per year
+
+```{r}
+EVA_number_year <- astronauts %>%
+  select(year_of_mission, eva_hrs_mission) %>%
+  #arrange(year_of_mission)
+  group_by(year_of_mission) %>%
+  summarise(sum(eva_hrs_mission)) %>%
+  rename(Total = `sum(eva_hrs_mission)`, Year = year_of_mission)
+```
+
+```{r}
+EVA_number_year %>%
+  ggplot(aes(x = Year, y = Total)) +
+  geom_bar(stat="identity")
+```
+
 
 # References
