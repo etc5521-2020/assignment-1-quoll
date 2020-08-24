@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = FALSE, cache=FALSE, message=FALSE, warning=FALSE)
 
 library(tidyverse)
 library(dplyr)
+library(reshape2)
 ```
 
 ```{r write-data, eval = FALSE}
@@ -66,6 +67,94 @@ EVA_number_year <- astronauts %>%
 EVA_number_year %>%
   ggplot(aes(x = Year, y = Total)) +
   geom_bar(stat="identity")
+```
+
+```{r}
+# astronauts %>%
+#   select(year_of_mission, hours_mission) %>%
+#   group_by(year_of_mission) %>%
+#   summarise(sum(hours_mission))
+```
+
+```{r}
+total_astronauts <- astronauts %>%
+  select(name, year_of_mission, hours_mission) %>%
+  arrange(year_of_mission) %>%
+  count(year_of_mission)
+```  
+  
+```{r}  
+astronauts_96 <- astronauts %>%
+  select(year_of_mission, hours_mission) %>%
+  filter(hours_mission < 96 ) %>%
+  count(year_of_mission)
+```
+
+```{r}
+join_96 <- full_join(astronauts_96,total_astronauts,  by = "year_of_mission") %>%
+  arrange(year_of_mission)
+
+join_96[is.na(join_96)] <- 0
+prop_96 <- join_96 %>%
+  rename("number96" = n.x, total = n.y) %>%
+  mutate(proportion_96 = (number96 / total)) %>%
+  select(year_of_mission, proportion_96)
+```
+
+
+
+```{r}
+astronauts_96_480<- astronauts %>%
+  select(year_of_mission, hours_mission) %>%
+  # mutate(total = sum(year_of_mission)) %>%
+  filter(hours_mission > 96 & hours_mission < 480) %>%
+  count(year_of_mission)
+```
+
+```{r}
+join_96_480 <- full_join(astronauts_96_480, total_astronauts, by = "year_of_mission") %>%
+  arrange(year_of_mission)
+
+join_96_480[is.na(join_96_480)] <- 0 
+prop96_480 <- join_96_480 %>%
+  rename("number96_480" = n.x, total = n.y) %>%
+  mutate(proportion96_480 = (number96_480 / total)) %>%
+  select(year_of_mission, proportion96_480)
+```
+
+```{r}
+astronauts_480 <- astronauts %>%
+  select(year_of_mission, hours_mission) %>%
+  # mutate(total = sum(year_of_mission)) %>%
+  filter(hours_mission > 480) %>%
+  count(year_of_mission)
+```
+
+```{r}
+join_480 <- full_join(astronauts_480, total_astronauts, by = "year_of_mission") %>%
+  arrange(year_of_mission)
+
+join_480[is.na(join_480)] <- 0 
+prop_480 <- join_480 %>%
+  rename("number480" = n.x, total = n.y) %>%
+  mutate(proportion_480 = (number480 / total)) %>%
+  select(year_of_mission, proportion_480)
+```
+
+```{r}
+mission <- full_join(prop_96, prop96_480, by = "year_of_mission") %>%
+  full_join(prop_480, by = "year_of_mission") %>%
+  rename("< 96h" = proportion_96, "96 to 480h" = proportion96_480, "> 480h" = proportion_480)
+
+
+mission1 <- mission %>%
+  pivot_longer("< 96h":"> 480h", names_to = "categories", values_to = "proportion")
+
+ggplot(mission1, aes(year_of_mission, proportion, categories, fill = categories)) +
+  geom_bar(stat="identity",position="fill") +
+  scale_fill_manual("categories", values = c("96 to 480h" = "#F5B041", "< 96h" = "#F5CBA7", "> 480h" = "#D35400")) +
+  ggtitle("Proportion of space travelers that participated in short, intermediate and long spaceflights")
+  
 ```
 
 
