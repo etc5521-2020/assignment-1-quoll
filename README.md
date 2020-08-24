@@ -1,11 +1,11 @@
 # ETC5521 Assignment 1 
 
-Team name: [FILL]
+Team name: quoll
 
 Team members:
 
-* [FILL]
-* [FILL]
+* Jinhao Luo
+* Yawen Zhang
 
 # Steps
 
