@@ -54,7 +54,7 @@ Therefore, the development of the world astronautic exploration with time from t
 
 ## Number of extravehicular (EVA) operations per year
 
-```{r}
+```{r select-raw-data}
 EVA_number_year <- astronauts %>%
   select(year_of_mission, eva_hrs_mission) %>%
   #arrange(year_of_mission)
@@ -63,10 +63,12 @@ EVA_number_year <- astronauts %>%
   rename(Total = `sum(eva_hrs_mission)`, Year = year_of_mission)
 ```
 
-```{r}
+```{r plot-EVA}
 EVA_number_year %>%
   ggplot(aes(x = Year, y = Total)) +
-  geom_bar(stat="identity")
+  geom_bar(stat="identity") +
+  theme(panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),axis.line = element_line(colour = "black")) +
+  ylab("Number of EVA")
 ```
 
 ```{r}
@@ -76,21 +78,21 @@ EVA_number_year %>%
 #   summarise(sum(hours_mission))
 ```
 
-```{r}
+```{r total-astronausts}
 total_astronauts <- astronauts %>%
   select(name, year_of_mission, hours_mission) %>%
   arrange(year_of_mission) %>%
   count(year_of_mission)
 ```  
   
-```{r}  
+```{r mission-less-96h}  
 astronauts_96 <- astronauts %>%
   select(year_of_mission, hours_mission) %>%
   filter(hours_mission < 96 ) %>%
   count(year_of_mission)
 ```
 
-```{r}
+```{r join-96-total}
 join_96 <- full_join(astronauts_96,total_astronauts,  by = "year_of_mission") %>%
   arrange(year_of_mission)
 
@@ -103,7 +105,7 @@ prop_96 <- join_96 %>%
 
 
 
-```{r}
+```{r mission-between-96-480h}
 astronauts_96_480<- astronauts %>%
   select(year_of_mission, hours_mission) %>%
   # mutate(total = sum(year_of_mission)) %>%
@@ -111,7 +113,7 @@ astronauts_96_480<- astronauts %>%
   count(year_of_mission)
 ```
 
-```{r}
+```{r join--96-480-total}
 join_96_480 <- full_join(astronauts_96_480, total_astronauts, by = "year_of_mission") %>%
   arrange(year_of_mission)
 
@@ -122,7 +124,7 @@ prop96_480 <- join_96_480 %>%
   select(year_of_mission, proportion96_480)
 ```
 
-```{r}
+```{r mission-over-480h}
 astronauts_480 <- astronauts %>%
   select(year_of_mission, hours_mission) %>%
   # mutate(total = sum(year_of_mission)) %>%
@@ -130,7 +132,7 @@ astronauts_480 <- astronauts %>%
   count(year_of_mission)
 ```
 
-```{r}
+```{r join-three-tables}
 join_480 <- full_join(astronauts_480, total_astronauts, by = "year_of_mission") %>%
   arrange(year_of_mission)
 
@@ -141,19 +143,24 @@ prop_480 <- join_480 %>%
   select(year_of_mission, proportion_480)
 ```
 
-```{r}
+```{r plot-mission-hours}
 mission <- full_join(prop_96, prop96_480, by = "year_of_mission") %>%
   full_join(prop_480, by = "year_of_mission") %>%
   rename("< 96h" = proportion_96, "96 to 480h" = proportion96_480, "> 480h" = proportion_480)
 
 
 mission1 <- mission %>%
-  pivot_longer("< 96h":"> 480h", names_to = "categories", values_to = "proportion")
+  pivot_longer("< 96h":"> 480h", names_to = "categories", values_to = "proportion") %>%
+  mutate(categories = as_factor(categories))
+  # mutate(categories = fct_relevel(categories, c("96 to 480h", "> 480h", "< 96h")))
 
 ggplot(mission1, aes(year_of_mission, proportion, categories, fill = categories)) +
   geom_bar(stat="identity",position="fill") +
   scale_fill_manual("categories", values = c("96 to 480h" = "#F5B041", "< 96h" = "#F5CBA7", "> 480h" = "#D35400")) +
-  ggtitle("Proportion of space travelers that participated in short, intermediate and long spaceflights")
+  ggtitle("Proportion of space travelers that participated in short, intermediate and long spaceflights")+
+  theme(panel.grid.major=element_line(colour=NA)) +
+  xlab("Year") +
+  ylab("Proportion of Astronauts")
   
 ```
 
