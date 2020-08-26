@@ -7,7 +7,7 @@ author:
   - Yawen Zhang
 date: "`r Sys.Date()`"
 output: 
-  html_document
+  bookdown::html_document2
 ---
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
@@ -50,9 +50,10 @@ Therefore, the development of the world astronautic exploration with time from t
 
 [FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
 
-## duration of missions
 
 ## Number of extravehicular (EVA) operations per year
+
+This Figure \@ref(fig:plotEVA) describe the Number of extravehicular (EVA) operations per year. Add up all the EVA in the same year and make this bar chart. Since the first spacewalk performed by Alexei Leonov in 1965, the number of extravehicular activity (EVA) was performed steadily increased especially around year 2000 over than 300 times per year. After year 2000, the number of times of EVA has decreased, it does not mean that the development of spacefights is regressive. Figure \@ref(fig:plotmissionhours) shows the execution duration for each mission and the results is dramatically increased.  
 
 ```{r select-raw-data}
 EVA_number_year <- astronauts %>%
@@ -63,14 +64,19 @@ EVA_number_year <- astronauts %>%
   rename(Total = `sum(eva_hrs_mission)`, Year = year_of_mission)
 ```
 
-```{r plot-EVA}
+```{r plotEVA, fig.cap="Number of EVA operation per year"}
 EVA_number_year %>%
   ggplot(aes(x = Year, y = Total)) +
   geom_bar(stat="identity") +
   theme(panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),axis.line = element_line(colour = "black")) +
-  ylab("Number of EVA")
+  ylab("Number of EVA") +
+  ggtitle("Number of extravehicular (EVA) operations per year")
 ```
 
+
+## Proportion of Space Travelers in Different Spaceflights
+
+Based on the article written by Corlett,  Stavnichuk and Komarova in 2020, divided the duration of mission hours into three categories could observe the progress of space traveler more intuitively. These three categoris include pariticipant short spacelights less than 96 hours, intermediate spaceflights between 96 to 480 hours and long spaceflights more than 480 hours. When the spaceflights first developed, all the duration of mission is less than 96 hours. After that the time astronauts spent in space increased through the spaceflights histories. The recent trend is the time spent on each mission exceeds 480 hours which shows in Figure \@ref(fig:plotmissionhours). The potential reason related to the launch of the International Space Station (ISS) progrom in 1998 (NASA, 2017). 
 ```{r}
 # astronauts %>%
 #   select(year_of_mission, hours_mission) %>%
@@ -143,25 +149,25 @@ prop_480 <- join_480 %>%
   select(year_of_mission, proportion_480)
 ```
 
-```{r plot-mission-hours}
+```{r plotmissionhours, fig.cap="Proportion of space travelers in different spaceflights"}
 mission <- full_join(prop_96, prop96_480, by = "year_of_mission") %>%
   full_join(prop_480, by = "year_of_mission") %>%
   rename("< 96h" = proportion_96, "96 to 480h" = proportion96_480, "> 480h" = proportion_480)
 
-
 mission1 <- mission %>%
   pivot_longer("< 96h":"> 480h", names_to = "categories", values_to = "proportion") %>%
-  mutate(categories = as_factor(categories))
-  # mutate(categories = fct_relevel(categories, c("96 to 480h", "> 480h", "< 96h")))
+  mutate(categories = as_factor(categories)) %>%
+  rename("Categories" = "categories")
+# mutate(categories = fct_relevel(categories, c("96 to 480h", "> 480h", "< 96h")))
 
-ggplot(mission1, aes(year_of_mission, proportion, categories, fill = categories)) +
+ggplot(mission1, aes(year_of_mission, proportion, Categories, fill = Categories)) +
   geom_bar(stat="identity",position="fill") +
-  scale_fill_manual("categories", values = c("96 to 480h" = "#F5B041", "< 96h" = "#F5CBA7", "> 480h" = "#D35400")) +
+  scale_fill_manual("Categories", values = c("96 to 480h" = "#F5B041", "< 96h" = "#F5CBA7", "> 480h" = "#D35400")) +
   ggtitle("Proportion of space travelers that participated in short, intermediate and long spaceflights")+
   theme(panel.grid.major=element_line(colour=NA)) +
   xlab("Year") +
-  ylab("Proportion of Astronauts")
-  
+  ylab("Proportion of Astronauts") +
+  theme(text = element_text(size = 9), axis.title.x = element_text(size = 12), axis.title.y = element_text(size = 12))
 ```
 
 
