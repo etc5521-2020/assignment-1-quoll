@@ -7,7 +7,7 @@ author:
   - [FILL]
 date: "`r Sys.Date()`"
 output: 
-  html_document
+  bookdown::html_document2
 ---
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = FALSE, cache=FALSE, message=FALSE, warning=FALSE)
 
 library(tidyverse)
 library(dplyr)
+library(plotly)
 ```
 
 ```{r write-data, eval = FALSE}
@@ -30,6 +31,59 @@ write.csv(astronauts_origin, here::here("data", "astronauts.csv"))
 astronauts <- read.csv(here::here("data", "astronauts.csv"))
 ```
 
+```{r yearly-total-projects}
+projects <- astronauts %>% 
+  select(year_of_mission, 
+         mission_title) %>%
+  group_by(mission_title) %>%
+  unique() %>%
+  ungroup() 
+
+
+yearly_projects <- projects %>% 
+  mutate(mission_title = as_factor(mission_title)) %>% 
+  group_by(year_of_mission) %>% 
+  summarise(total = length(mission_title)) %>%
+  ungroup()
+
+projects_plot <- yearly_projects %>%
+  ggplot(aes(year_of_mission, total)) +
+  geom_point() +
+  geom_line() + 
+  xlab("Year") +
+  ylab("Total")
+
+ggplotly(projects_plot)
+```
+
+```{r yearly-experiments}
+yearly_experiments <- astronauts %>% 
+  group_by(year_of_mission) %>% 
+  summarise(total_experiments = length(total_number_of_missions))
+
+yearly_experiments %>% 
+  ggplot(aes(year_of_mission, total_experiments)) +
+  geom_col(fill = "#6cc5eb") + 
+  geom_line(lwd = 1, colour = "red") +
+  geom_text(aes(label=year_of_mission, angle = 90), size = 3, hjust = -0.1, vjust = 0.3, position = "stack") + 
+  ylim(0,70) + 
+  xlab("Year") + 
+  ylab("Total")
+```
+
+```{r countries}
+countries <- astronauts %>%
+  group_by(year_of_mission,nationality) %>% 
+  summarise(total_experiments = length(nationality)) %>%
+  ungroup() %>% 
+  mutate(nationality = ifelse(total_experiments <4, "other", nationality))
+
+countries
+
+countries %>%
+  ggplot(aes(year_of_mission, total_experiments)) +
+  geom_line(aes(colour = nationality))
+```
 
 
 
@@ -41,6 +95,14 @@ astronauts <- read.csv(here::here("data", "astronauts.csv"))
 
 # Analysis and findings
 
-[FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
+### Trends in the astronautic exploration
+
+Humans have never stop their steps of space exploration. Since 1961 the first humans have accomplished an orbital spaceflight, many countries join the team of exploring the space (). Therefore, identify the trend in astronautic exploration missions could help the readers realise the development of the space exploration. According to figure \@ref(fig:yearly-total-projects), the general trend of global space exploration projects is increase from 1961 to 1985. In 1985, the number of global project has reached the peak which 28 projects has been launched in this single year. After that the global project has experienced a significant decrease trend. Although the number of project has bounced to 14 in 1992, and fluctuated in the following seventeen years, the general trend of project amount is decrease after 1985. In general, based on figure \@ref(fig:yearly-total-projects) which might indicates that the global astronautic exploration competition between each government is fierce, and the competition has reached the peak in 1985. Although the amount has decreased after peak. The competition, however, still remained strong until 2009.
+
+Beside the number of projects, the mission amount which needed to be carried out by each shuttle launched could also be used for identifying the trends of astronautic exploration, because each mission in a project is for helping human to explore the universe. 
+
+
+
+
 
 # References
