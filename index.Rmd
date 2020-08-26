@@ -31,7 +31,7 @@ write.csv(astronauts_origin, here::here("data", "astronauts.csv"))
 astronauts <- read.csv(here::here("data", "astronauts.csv"))
 ```
 
-```{r yearly-total-projects}
+```{r yearly-total-projects, fig.cap= "Yearly astronautic exploration project amount in the world"}
 projects <- astronauts %>% 
   select(year_of_mission, 
          mission_title) %>%
@@ -51,40 +51,63 @@ projects_plot <- yearly_projects %>%
   geom_point() +
   geom_line() + 
   xlab("Year") +
-  ylab("Total")
+  ylab("Total") +
+  ggtitle("Yearly Project Amount")
 
 ggplotly(projects_plot)
 ```
 
-```{r yearly-experiments}
-yearly_experiments <- astronauts %>% 
+```{r yearly-mission, fig.cap= "Yearly astronautic exploration mission amount (mission amount in yearly projects)"}
+yearly_mission <- astronauts %>% 
   group_by(year_of_mission) %>% 
-  summarise(total_experiments = length(total_number_of_missions))
+  summarise(total_mission = length(total_number_of_missions))
 
-yearly_experiments %>% 
-  ggplot(aes(year_of_mission, total_experiments)) +
+yearly_mission %>% 
+  ggplot(aes(year_of_mission, total_mission)) +
   geom_col(fill = "#6cc5eb") + 
   geom_line(lwd = 1, colour = "red") +
   geom_text(aes(label=year_of_mission, angle = 90), size = 3, hjust = -0.1, vjust = 0.3, position = "stack") + 
   ylim(0,70) + 
   xlab("Year") + 
-  ylab("Total")
+  ylab("Total") + 
+  ggtitle("Yearly Mission Amount")
 ```
 
-```{r countries}
+```{r countries-line-chart, fig.cap="Yearly mission amount of each countries"}
 countries <- astronauts %>%
   group_by(year_of_mission,nationality) %>% 
-  summarise(total_experiments = length(nationality)) %>%
+  summarise(total_mission = length(nationality)) %>%
   ungroup() %>% 
-  mutate(nationality = ifelse(total_experiments <4, "other", nationality))
+  mutate(nationality = ifelse(total_mission <4, "other", nationality))
 
-countries
+countries_plot <- countries %>%
+  ggplot(aes(year_of_mission, total_mission)) +
+  geom_line(aes(colour = nationality)) + 
+  labs(colour = "country") + 
+  xlab("Year") + 
+  ylab("Count") + 
+  ggtitle("Country Mission Amount")
 
-countries %>%
-  ggplot(aes(year_of_mission, total_experiments)) +
-  geom_line(aes(colour = nationality))
+ggplotly(countries_plot)
 ```
 
+```{r countries-bar-chart, fig.cap="The global percentage of each country's mission"}
+countries_two <- astronauts %>%
+  select(nationality, year_of_mission) %>%
+  mutate(nationality = ifelse(nationality == "U.S." | nationality=="U.S.S.R/Russia", nationality, "other"))
+
+countries_two %>% 
+  ggplot() + 
+  geom_bar(aes(x = year_of_mission, fill = nationality), position = "fill") + 
+  scale_fill_manual(values = c("#eb3434", "#34bdeb", "#e2eb34")) + 
+  xlab("Year") + 
+  ylab("Count") + 
+  theme_classic() + 
+  guides(fill = guide_legend(title = "country")) + 
+  ggtitle("Mission Percentage")
+
+
+```
 
 
 # Introduction and motivation
@@ -99,10 +122,10 @@ countries %>%
 
 Humans have never stop their steps of space exploration. Since 1961 the first humans have accomplished an orbital spaceflight, many countries join the team of exploring the space (). Therefore, identify the trend in astronautic exploration missions could help the readers realise the development of the space exploration. According to figure \@ref(fig:yearly-total-projects), the general trend of global space exploration projects is increase from 1961 to 1985. In 1985, the number of global project has reached the peak which 28 projects has been launched in this single year. After that the global project has experienced a significant decrease trend. Although the number of project has bounced to 14 in 1992, and fluctuated in the following seventeen years, the general trend of project amount is decrease after 1985. In general, based on figure \@ref(fig:yearly-total-projects) which might indicates that the global astronautic exploration competition between each government is fierce, and the competition has reached the peak in 1985. Although the amount has decreased after peak. The competition, however, still remained strong until 2009.
 
-Beside the number of projects, the mission amount which needed to be carried out by each shuttle launched could also be used for identifying the trends of astronautic exploration, because each mission in a project is for helping human to explore the universe. 
+Beside the number of projects, the mission amount which needed to be carried out by each shuttle launched could also be used for identifying the trends of astronautic exploration, because each mission in a project is for helping human to explore the universe. According to figure \@ref(fig:yearly-mission), it seems likely that there are four times of astronautic exploration rush in human history. In those period, humans set many missions to help the space exploration. The first rush happened in 1985. There were over 60 missions has been carried out in the space , and it was the peak for astronautic exploration. Human has started to show their enthusiasm for astronautic exploring. The duration and amount of mission has remained in a high level in the following thirty-year. Four years later after 1985, the second rush appeared and lasted thirteen years. In that period, average 40 missions has been carried out in universe per year. The third and forth peak also happened in the following years, which lasted three and two years, respectively. Although, the amount of missions decreased after 2009, the mission amount still remained in above 10 cases level per year until now. Overall, human never stop their steps to explore the space. Astronautic exploration has experienced a increase trend from 1961 and remained in a high level for many years.
 
-
-
+In addition, an astronautic exploration race has launched along with the human desire for space.
+According to figure \@ref(fig:countries-line-chart), the main forces of space exploration were United State and U.S.S.R, which were in the same level before 1981. After that, however, U.S. increased the mission amount significantly, and lead the world level over thirty-two years. On the other hand, based on figure \@ref(fig:countries-bar-chart), U.S. and U.S.S.R/Russia seem play an important role in astronautic exploration in the world. But U.S was still the leader in the astronautic field, and it has occupied the most astronautic exploration missions in the world. The awareness of universe, and technical advantage have contributed the leader level to United State (). However, even though U.S. and U.S.S.R dominated the astronautic field from 1961 and 1977, there were some new countries join that field in 1978 based on figure \@ref(fig:countries-bar-chart). And after that the trend of new countries joining the universe exploration is increasing in general. In conclusion, although the technical advantages has increased the gaps of each country, and contributed the leader level to United State, many countries still join the astronautic exploration. And more and more countries would join in the exploration, which might become the trend.
 
 
 # References
