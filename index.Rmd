@@ -38,7 +38,9 @@ astronauts <- read.csv(here::here("data", "astronauts.csv"))
 
 # Introduction and motivation
 
-[FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
+@corlett2020population indicated that since the first humans completed an orbital spaceflight in 1961 and stepped on the moon in 1969, space missions have been completed nearly 60 years. Meanwhile, space exploration is still technologically challenging and competitive. Therefore, this report would try to analyses the development of the world astronautic exploration from 1961. In the following sections, we will describe the data set and source of the data, and what is the data prepared for. The data description also includes how we transform and clean the raw data for analysis. Beside, our statistical programming used for analysis is R and Rstudio. However, the data set might be not comprehensive, which might result in insufficient analysis and conclusion. Meanwhile, some missing values also included in the data, which might impact on the accuracy of the report. Such limitation should be considered and improved in following analysis.
+
+Based on the purpose of finding the development of astronautical exploration, this report would consider a primary question and three secondary questions. The primary question will focus on the development of the world astronautic exploration with time from the first spaceflight launched. In addition, the three secondary questions should be: Firstly, When does astronautic exploration become more competitive? Secondly, How is the tech of astronautic exploration development? Thirdly,  Do females also play an important role in astronautic exploration, when does the first female astronaut appear in international astronautic exploration?
 
 # Data description
 
@@ -46,12 +48,9 @@ The data which are used for analysing in this report are from the astronaut data
 
 By browsing the whole dataset and using the glimpse function to observe the variables and the corresponding classes by R, this report decides to apply this dataset into analysing the development of the astronautic industry. Meanwhile, according to the observation, the report would try to use several important and useful variables to explore the development of the astronautic industry as much as possible, like the year, number, and duration of missions, proportion of space travellers, the number of extravehicular activity and the gender of astronauts. In addition, some missing values and inappropriate classes of variables have been found, which would be considered in the following analysing part.
 
-Therefore, the development of the world astronautic exploration with time from the first spaceflight launched would be the primary question of this report. In addition, the report would also focus on three secondary questions. Firstly, When does astronautic exploration become more competitive? Secondly, How is the tech of astronautic exploration development? Thirdly,  Do females also play an important role in astronautic exploration, when does the first female astronaut appear in international astronautic exploration?
-
-
 # Analysis and findings
 
-### Trends in the astronautical exploration
+## Trends in the astronautical exploration
 
 @corlett2020population have indicated that humans have never stop their steps of space exploration. Since 1961 the first humans have accomplished an orbital spaceflight, many countries join the team of exploring the space. Therefore, identify the trend in astronautical exploration projects could help the readers realise the development of the space exploration. According to figure \@ref(fig:yearly-total-projects), the general trend of global space exploration projects is increase from 1961 to 1985. In 1985, the number of global project has reached the peak which 28 projects has been launched in this single year. After that the global project has experienced a significant decrease trend. Although the number of project has bounced to 14 in 1992, and fluctuated in the following seventeen years, the general trend of project amount is decrease after 1985. In general, based on figure \@ref(fig:yearly-total-projects) which might indicates that the global astronautical exploration competition between each government is fierce, and the competition has reached the peak in 1985. Although the amount has decreased after peak. The competition, however, still remained strong until 2009.
 
@@ -134,11 +133,123 @@ countries_two %>%
   theme_classic() + 
   guides(fill = guide_legend(title = "country")) + 
   ggtitle("Global Mission Percentage")
-
-
 ```
 
-### Women performance in astronautical exploration
+## The tech of astronautic exploration development
+
+### Number of extravehicular (EVA) operations per year
+
+This Figure \@ref(fig:plotEVA) describe the Number of extravehicular (EVA) operations per year. Add up all the EVA in the same year and make this bar chart. Since the first spacewalk performed by Alexei Leonov in 1965, the number of extravehicular activity (EVA) was performed steadily increased especially around year 2000 over than 300 times per year. After year 2000, the number of times of EVA has decreased, it does not mean that the development of spacefights is regressive. Figure \@ref(fig:plotmissionhours) shows the execution duration for each mission and the results is dramatically increased.  
+
+```{r select-raw-data}
+EVA_number_year <- astronauts %>%
+  select(year_of_mission, eva_hrs_mission) %>%
+  #arrange(year_of_mission)
+  group_by(year_of_mission) %>%
+  summarise(sum(eva_hrs_mission)) %>%
+  rename(Total = `sum(eva_hrs_mission)`, Year = year_of_mission)
+```
+
+```{r plotEVA, fig.cap="Number of EVA operation per year"}
+EVA_number_year %>%
+  ggplot(aes(x = Year, y = Total)) +
+  geom_bar(stat="identity") +
+  theme(panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),axis.line = element_line(colour = "black")) +
+  ylab("Number of EVA") +
+  ggtitle("Number of extravehicular (EVA) operations per year")
+```
+
+
+### Proportion of Space Travelers in Different Spaceflights
+
+Based on the article written by Corlett,  Stavnichuk and Komarova in 2020, divided the duration of mission hours into three categories could observe the progress of space traveler more intuitively. These three categoris include pariticipant short spacelights less than 96 hours, intermediate spaceflights between 96 to 480 hours and long spaceflights more than 480 hours. When the spaceflights first developed, all the duration of mission is less than 96 hours. After that the time astronauts spent in space increased through the spaceflights histories. The recent trend is the time spent on each mission exceeds 480 hours which shows in Figure \@ref(fig:plotmissionhours). @NASA explained the potential reason related to the launch of the International Space Station (ISS) program in 1998. 
+
+```{r total-astronausts}
+total_astronauts <- astronauts %>%
+  select(name, year_of_mission, hours_mission) %>%
+  arrange(year_of_mission) %>%
+  count(year_of_mission)
+```  
+  
+```{r mission-less-96h}  
+astronauts_96 <- astronauts %>%
+  select(year_of_mission, hours_mission) %>%
+  filter(hours_mission < 96 ) %>%
+  count(year_of_mission)
+```
+
+```{r join-96-total}
+join_96 <- full_join(astronauts_96,total_astronauts,  by = "year_of_mission") %>%
+  arrange(year_of_mission)
+
+join_96[is.na(join_96)] <- 0
+prop_96 <- join_96 %>%
+  rename("number96" = n.x, total = n.y) %>%
+  mutate(proportion_96 = (number96 / total)) %>%
+  select(year_of_mission, proportion_96)
+```
+
+
+```{r mission-between-96-480h}
+astronauts_96_480<- astronauts %>%
+  select(year_of_mission, hours_mission) %>%
+  # mutate(total = sum(year_of_mission)) %>%
+  filter(hours_mission > 96 & hours_mission < 480) %>%
+  count(year_of_mission)
+```
+
+```{r join--96-480-total}
+join_96_480 <- full_join(astronauts_96_480, total_astronauts, by = "year_of_mission") %>%
+  arrange(year_of_mission)
+
+join_96_480[is.na(join_96_480)] <- 0 
+prop96_480 <- join_96_480 %>%
+  rename("number96_480" = n.x, total = n.y) %>%
+  mutate(proportion96_480 = (number96_480 / total)) %>%
+  select(year_of_mission, proportion96_480)
+```
+
+```{r mission-over-480h}
+astronauts_480 <- astronauts %>%
+  select(year_of_mission, hours_mission) %>%
+  # mutate(total = sum(year_of_mission)) %>%
+  filter(hours_mission > 480) %>%
+  count(year_of_mission)
+```
+
+```{r join-three-tables}
+join_480 <- full_join(astronauts_480, total_astronauts, by = "year_of_mission") %>%
+  arrange(year_of_mission)
+
+join_480[is.na(join_480)] <- 0 
+prop_480 <- join_480 %>%
+  rename("number480" = n.x, total = n.y) %>%
+  mutate(proportion_480 = (number480 / total)) %>%
+  select(year_of_mission, proportion_480)
+```
+
+```{r plotmissionhours, fig.cap="Proportion of space travelers in different spaceflights"}
+mission <- full_join(prop_96, prop96_480, by = "year_of_mission") %>%
+  full_join(prop_480, by = "year_of_mission") %>%
+  rename("< 96h" = proportion_96, "96 to 480h" = proportion96_480, "> 480h" = proportion_480)
+
+mission1 <- mission %>%
+  pivot_longer("< 96h":"> 480h", names_to = "categories", values_to = "proportion") %>%
+  mutate(categories = as_factor(categories)) %>%
+  rename("Categories" = "categories")
+# mutate(categories = fct_relevel(categories, c("96 to 480h", "> 480h", "< 96h")))
+
+ggplot(mission1, aes(year_of_mission, proportion, Categories, fill = Categories)) +
+  geom_bar(stat="identity",position="fill") +
+  scale_fill_manual("Categories", values = c("96 to 480h" = "#F5B041", "< 96h" = "#F5CBA7", "> 480h" = "#D35400")) +
+  ggtitle("Proportion of space travelers that participated in short, intermediate and long spaceflights")+
+  theme(panel.grid.major=element_line(colour=NA)) +
+  xlab("Year") +
+  ylab("Proportion of Astronauts") +
+  theme(text = element_text(size = 9), axis.title.x = element_text(size = 12), axis.title.y = element_text(size = 12))
+```
+
+## Women performance in astronautical exploration
 
 According to figure \@ref(fig:gender), while women have also appeared in space exploration, men have been the main force in this 49-year period. However, we cannot ignore the contribution of female astronaut in space exploration. @jacksona2019women indicated that women has preformed essential work in astronautical area since 19th century. Furthermore, @jacksona2019women also illustrated that the first women travelled into space was in 1963, and the first American female astronaut appeared in 1983. Female astronauts also contribute to the exploration same as male astronauts. 
 
@@ -169,16 +280,19 @@ astronauts %>%
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
+
 # Conclusions 
 
 In conclusion, Human shows their interesting and enthusiasm for universe. The astronautical exploration projects and missions experienced a increase trend since the first humans appeared in the universe. And there were a space exploration rush lasted almost 24 years in the world. In that period, the number of project and mission are the highest level from 1961 to today. Meanwhile, many countries also join in the project of the astronautical exploration, which might contribute the development of the space exploration. 
+
+Furthermore, the technologies of the space exploration also have developed. Through the spaceflight activities of space travelers exploration, the overall EVA number steadily increased ten years before, but it decreased in recent years. However, it does not mean the development of the spaceflights is regressing. Since the launch of the ISS program in 1998 (@NASA), the duration of almost each mission task is more than 480 hours.
 
 In addition, female astronauts also appear in the history of astronautical exploration. Although male astronauts are still the main force in the universe, the number of female astronauts trend to increase from 20th century. And the appear of female astronauts might change the history of space exploration and help human with the exploration.
 
 
 # Acknowledgement
 
-The programming language used to analyse the trends of global astronautical exploration is R (4.0.2) [@R]. 
+The programming language used to analyse the trends of global astronautical exploration is R (4.0.2) [@R]. And the platform which used for running R language is Rstudio (1.3.1056) [@Rstudio].
 
 Following packages has been included in our Rmd file.
 
