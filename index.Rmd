@@ -1,23 +1,28 @@
 ---
 title: "ETC5521 Assignment 1"
-subtitle: "Astronaut Database"
+subtitle: "Global Astronautical exploration trends"
 team: quoll
 author:
   - Jinhao Luo
   - Yawen Zhang
 date: "`r Sys.Date()`"
+bibliography: references.bib
+biblio-style: apa
 output: 
-  html_document
+  bookdown::html_document2:
+    citation_package: biblatex
+    toc: true
 ---
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
-
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, cache=FALSE, message=FALSE, warning=FALSE)
 
 library(tidyverse)
 library(dplyr)
+library(plotly)
+library(ggplot2)
 ```
 
 ```{r write-data, eval = FALSE}
@@ -28,9 +33,8 @@ write.csv(astronauts_origin, here::here("data", "astronauts.csv"))
 ```
 
 ```{r read-data}
-astronauts <- read.csv(here::here("data/astronauts.csv"))
+astronauts <- read.csv(here::here("data", "astronauts.csv"))
 ```
-
 
 # Introduction and motivation
 
@@ -47,26 +51,141 @@ Therefore, the development of the world astronautic exploration with time from t
 
 # Analysis and findings
 
-[FILL] Should include at least one plot or numerical summary for each of your questions, that helps the reader arrive at an answer. You should also write paragraphs describing the methods, summaries and findings. 
+### Trends in the astronautical exploration
 
-## duration of missions
+@corlett2020population have indicated that humans have never stop their steps of space exploration. Since 1961 the first humans have accomplished an orbital spaceflight, many countries join the team of exploring the space. Therefore, identify the trend in astronautical exploration projects could help the readers realise the development of the space exploration. According to figure \@ref(fig:yearly-total-projects), the general trend of global space exploration projects is increase from 1961 to 1985. In 1985, the number of global project has reached the peak which 28 projects has been launched in this single year. After that the global project has experienced a significant decrease trend. Although the number of project has bounced to 14 in 1992, and fluctuated in the following seventeen years, the general trend of project amount is decrease after 1985. In general, based on figure \@ref(fig:yearly-total-projects) which might indicates that the global astronautical exploration competition between each government is fierce, and the competition has reached the peak in 1985. Although the amount has decreased after peak. The competition, however, still remained strong until 2009.
 
-## Number of extravehicular (EVA) operations per year
+```{r yearly-total-projects, fig.cap= "Yearly astronauticalal exploration project amount in the world"}
+projects <- astronauts %>% 
+  select(year_of_mission, 
+         mission_title) %>%
+  group_by(mission_title) %>%
+  unique() %>%
+  ungroup() 
 
-```{r}
-EVA_number_year <- astronauts %>%
-  select(year_of_mission, eva_hrs_mission) %>%
-  #arrange(year_of_mission)
-  group_by(year_of_mission) %>%
-  summarise(sum(eva_hrs_mission)) %>%
-  rename(Total = `sum(eva_hrs_mission)`, Year = year_of_mission)
+
+yearly_projects <- projects %>% 
+  mutate(mission_title = as_factor(mission_title)) %>% 
+  group_by(year_of_mission) %>% 
+  summarise(total = length(mission_title)) %>%
+  ungroup()
+
+projects_plot <- yearly_projects %>%
+  ggplot(aes(year_of_mission, total)) +
+  geom_point() +
+  geom_line() + 
+  xlab("Year") +
+  ylab("Total") +
+  ggtitle("Global Yearly Project Amount")
+
+ggplotly(projects_plot)
 ```
 
-```{r}
-EVA_number_year %>%
-  ggplot(aes(x = Year, y = Total)) +
-  geom_bar(stat="identity")
+
+Beside the number of projects, the mission amount which needed to be carried out by each shuttle launched could also be used for identifying the trends of astronautical exploration, because each mission in a project is for helping human to explore the universe. According to figure \@ref(fig:yearly-mission), it seems likely that there are four times of astronautical exploration rush in human history. In those period, humans set many missions to help the space exploration. The first rush happened in 1985. There were over 60 missions has been carried out in the space , and it was the peak for astronautical exploration. Human has started to show their enthusiasm for astronautical exploring. The duration and amount of mission has remained in a high level in the following thirty-year. Four years later after 1985, the second rush appeared and lasted thirteen years. In that period, average 40 missions has been carried out in universe per year. The third and forth peak also happened in the following years, which lasted three and two years, respectively. Although, the amount of missions decreased after 2009, the mission amount still remained in above 10 cases level per year until now. Overall, human never stop their steps to explore the space. astronautical exploration has experienced a increase trend from 1961 and remained in a high level for many years.
+
+```{r yearly-mission, fig.cap= "Yearly astronautical exploration mission amount in the world (total mission in yearly projects)"}
+yearly_mission <- astronauts %>% 
+  group_by(year_of_mission) %>% 
+  summarise(total_mission = length(total_number_of_missions))
+
+yearly_mission %>% 
+  ggplot(aes(year_of_mission, total_mission)) +
+  geom_col(fill = "#6cc5eb") + 
+  geom_line(lwd = 1, colour = "red") +
+  geom_text(aes(label=year_of_mission, angle = 90), size = 3, hjust = -0.1, vjust = 0.3, position = "stack") + 
+  ylim(0,70) + 
+  xlab("Year") + 
+  ylab("Total") + 
+  ggtitle("Global Yearly Mission Amount")
 ```
+
+In addition, an astronautical exploration race has launched along with the human desire for space. Figure \@ref(fig:countries-line-chart) and figure \@ref(fig:countries-bar-chart) indicate the astronautical mission amount trends of each country and global astronautical mission share of each country, respectively. According to figure \@ref(fig:countries-line-chart), the main forces of space exploration were United State and U.S.S.R, which were in the same level before 1981. After that, however, U.S. increased the mission amount significantly, and lead the world level over thirty-two years. On the other hand, based on figure \@ref(fig:countries-bar-chart), U.S. and U.S.S.R/Russia seem play an important role in astronautical exploration in the world. But U.S was still the leader in the astronautical field, and it has occupied the most astronautical exploration missions in the world. @blamont2005international explained that the awareness of universe, and technical advantage have contributed the leader level to United State. However, even though U.S. and U.S.S.R dominated the astronautical field from 1961 and 1977, there were some new countries join that field in 1978 based on figure \@ref(fig:countries-bar-chart). And after that the trend of new countries joining the universe exploration is increasing in general. In conclusion, although the technical advantages has increased the gaps of each country, and contributed the leader level to United State, many countries still join the astronautical exploration. And more and more countries would join in the exploration, which might become the trend.
+
+```{r countries-line-chart, fig.cap="Yearly mission amount of each countries"}
+countries <- astronauts %>%
+  group_by(year_of_mission,nationality) %>% 
+  summarise(total_mission = length(nationality)) %>%
+  ungroup() %>% 
+  mutate(nationality = ifelse(total_mission <4, "other", nationality))
+
+countries_plot <- countries %>%
+  ggplot(aes(year_of_mission, total_mission)) +
+  geom_line(aes(colour = nationality)) + 
+  labs(colour = "country") + 
+  xlab("Year") + 
+  ylab("Count") + 
+  ggtitle("Country Mission Amount")
+
+ggplotly(countries_plot)
+```
+
+```{r countries-bar-chart, fig.cap="The global percentage of each country's mission"}
+countries_two <- astronauts %>%
+  select(nationality, year_of_mission) %>%
+  mutate(nationality = ifelse(nationality == "U.S." | nationality=="U.S.S.R/Russia", nationality, "other"))
+
+countries_two %>% 
+  ggplot() + 
+  geom_bar(aes(x = year_of_mission, fill = nationality), position = "fill") + 
+  scale_fill_manual(values = c("#eb3434", "#34bdeb", "#e2eb34")) + 
+  xlab("Year") + 
+  ylab("Count") + 
+  theme_classic() + 
+  guides(fill = guide_legend(title = "country")) + 
+  ggtitle("Global Mission Percentage")
+
+
+```
+
+### Women performance in astronautical exploration
+
+According to figure \@ref(fig:gender), while women have also appeared in space exploration, men have been the main force in this 49-year period. However, we cannot ignore the contribution of female astronaut in space exploration. @jacksona2019women indicated that women has preformed essential work in astronautical area since 19th century. Furthermore, @jacksona2019women also illustrated that the first women travelled into space was in 1963, and the first American female astronaut appeared in 1983. Female astronauts also contribute to the exploration same as male astronauts. 
+
+```{r gender, fig.cap="Astronaut gender amount comparison"}
+gender <- astronauts %>%
+  select(year_of_mission,sex) %>% 
+  group_by(year_of_mission) %>% 
+  count(sex) 
+
+
+gender %>% 
+  ggplot() + 
+  geom_bar(aes(sex, fill = sex)) + 
+  xlab("gender") + 
+  ggtitle("Astronaut Gender Amount")
+```
+
+Female astronauts trend to increase in the space exploration. According to figure \@ref(fig:gender-percentage), although there was female astronauts appears in the space in 1963, there was a 20-year empty period for female astronauts until 1981. Such situation finished until 1982, and after that, female astronauts trend to increase in fluctuation along with year growing. And female astronauts have appeared in the astronautical exploration almost every year. 
+
+```{r gender-percentage, fig.cap="Global gender share in astronautical exploration of each year "}
+astronauts %>% 
+  select(year_of_mission, sex) %>% 
+  ggplot() + 
+  geom_bar(aes(x = year_of_mission, fill = sex), position = "fill") + 
+  xlab("year") + 
+  ggtitle("Global Gender Share")
+```
+
+Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
+
+# Conclusions 
+
+In conclusion, Human shows their interesting and enthusiasm for universe. The astronautical exploration projects and missions experienced a increase trend since the first humans appeared in the universe. And there were a space exploration rush lasted almost 24 years in the world. In that period, the number of project and mission are the highest level from 1961 to today. Meanwhile, many countries also join in the project of the astronautical exploration, which might contribute the development of the space exploration. 
+
+In addition, female astronauts also appear in the history of astronautical exploration. Although male astronauts are still the main force in the universe, the number of female astronauts trend to increase from 20th century. And the appear of female astronauts might change the history of space exploration and help human with the exploration.
+
+
+# Acknowledgement
+
+The programming language used to analyse the trends of global astronautical exploration is R (4.0.2) [@R]. 
+
+Following packages has been included in our Rmd file.
+
+- package tidyverse (1.3.0) [@tidyverse],
+- package dplyr (1.0.1) [@dplyr],
+- package plotly (4.9.2.1) [@plotly],
+- package ggplot2 (3.3.2) [@ggplot2]
 
 
 # References
