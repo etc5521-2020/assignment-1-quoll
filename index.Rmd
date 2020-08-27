@@ -1,13 +1,17 @@
 ---
 title: "ETC5521 Assignment 1"
-subtitle: "Your title"
+subtitle: "Global Astronautical exploration trends"
 team: quoll
 author:
   - Jinhao Luo
   - Yawen Zhang
 date: "`r Sys.Date()`"
+bibliography: references.bib
+biblio-style: apa
 output: 
-  bookdown::html_document2
+  bookdown::html_document2:
+    citation_package: biblatex
+    toc: true
 ---
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
@@ -18,6 +22,7 @@ knitr::opts_chunk$set(echo = FALSE, cache=FALSE, message=FALSE, warning=FALSE)
 library(tidyverse)
 library(dplyr)
 library(plotly)
+library(ggplot2)
 ```
 
 ```{r write-data, eval = FALSE}
@@ -43,7 +48,7 @@ astronauts <- read.csv(here::here("data", "astronauts.csv"))
 
 ### Trends in the astronautical exploration
 
-Humans have never stop their steps of space exploration. Since 1961 the first humans have accomplished an orbital spaceflight, many countries join the team of exploring the space (Tatsuya). Therefore, identify the trend in astronautical exploration projects could help the readers realise the development of the space exploration. According to figure \@ref(fig:yearly-total-projects), the general trend of global space exploration projects is increase from 1961 to 1985. In 1985, the number of global project has reached the peak which 28 projects has been launched in this single year. After that the global project has experienced a significant decrease trend. Although the number of project has bounced to 14 in 1992, and fluctuated in the following seventeen years, the general trend of project amount is decrease after 1985. In general, based on figure \@ref(fig:yearly-total-projects) which might indicates that the global astronautical exploration competition between each government is fierce, and the competition has reached the peak in 1985. Although the amount has decreased after peak. The competition, however, still remained strong until 2009.
+@corlett2020population have indicated that humans have never stop their steps of space exploration. Since 1961 the first humans have accomplished an orbital spaceflight, many countries join the team of exploring the space. Therefore, identify the trend in astronautical exploration projects could help the readers realise the development of the space exploration. According to figure \@ref(fig:yearly-total-projects), the general trend of global space exploration projects is increase from 1961 to 1985. In 1985, the number of global project has reached the peak which 28 projects has been launched in this single year. After that the global project has experienced a significant decrease trend. Although the number of project has bounced to 14 in 1992, and fluctuated in the following seventeen years, the general trend of project amount is decrease after 1985. In general, based on figure \@ref(fig:yearly-total-projects) which might indicates that the global astronautical exploration competition between each government is fierce, and the competition has reached the peak in 1985. Although the amount has decreased after peak. The competition, however, still remained strong until 2009.
 
 ```{r yearly-total-projects, fig.cap= "Yearly astronauticalal exploration project amount in the world"}
 projects <- astronauts %>% 
@@ -90,7 +95,7 @@ yearly_mission %>%
   ggtitle("Global Yearly Mission Amount")
 ```
 
-In addition, an astronautical exploration race has launched along with the human desire for space. Figure \@ref(fig:countries-line-chart) and figure \@ref(fig:countries-bar-chart) indicate the astronautical mission amount trends of each country and global astronautical mission share of each country, respectively. According to figure \@ref(fig:countries-line-chart), the main forces of space exploration were United State and U.S.S.R, which were in the same level before 1981. After that, however, U.S. increased the mission amount significantly, and lead the world level over thirty-two years. On the other hand, based on figure \@ref(fig:countries-bar-chart), U.S. and U.S.S.R/Russia seem play an important role in astronautical exploration in the world. But U.S was still the leader in the astronautical field, and it has occupied the most astronautical exploration missions in the world. The awareness of universe, and technical advantage have contributed the leader level to United State (Jacques). However, even though U.S. and U.S.S.R dominated the astronautical field from 1961 and 1977, there were some new countries join that field in 1978 based on figure \@ref(fig:countries-bar-chart). And after that the trend of new countries joining the universe exploration is increasing in general. In conclusion, although the technical advantages has increased the gaps of each country, and contributed the leader level to United State, many countries still join the astronautical exploration. And more and more countries would join in the exploration, which might become the trend.
+In addition, an astronautical exploration race has launched along with the human desire for space. Figure \@ref(fig:countries-line-chart) and figure \@ref(fig:countries-bar-chart) indicate the astronautical mission amount trends of each country and global astronautical mission share of each country, respectively. According to figure \@ref(fig:countries-line-chart), the main forces of space exploration were United State and U.S.S.R, which were in the same level before 1981. After that, however, U.S. increased the mission amount significantly, and lead the world level over thirty-two years. On the other hand, based on figure \@ref(fig:countries-bar-chart), U.S. and U.S.S.R/Russia seem play an important role in astronautical exploration in the world. But U.S was still the leader in the astronautical field, and it has occupied the most astronautical exploration missions in the world. @blamont2005international explained that the awareness of universe, and technical advantage have contributed the leader level to United State. However, even though U.S. and U.S.S.R dominated the astronautical field from 1961 and 1977, there were some new countries join that field in 1978 based on figure \@ref(fig:countries-bar-chart). And after that the trend of new countries joining the universe exploration is increasing in general. In conclusion, although the technical advantages has increased the gaps of each country, and contributed the leader level to United State, many countries still join the astronautical exploration. And more and more countries would join in the exploration, which might become the trend.
 
 ```{r countries-line-chart, fig.cap="Yearly mission amount of each countries"}
 countries <- astronauts %>%
@@ -130,7 +135,7 @@ countries_two %>%
 
 ### Women performance in astronautical exploration
 
-According to figure \@ref(fig:gender), while women have also appeared in space exploration, men have been the main force in this 49-year period. However, we cannot ignore the contribution of female astronaut in space exploration. Women has preformed essential work in astronautical area since 19th century (Jackson). The first women travelled  into space was in 1963, and the first American female astronaut appeared in 1983 (Jackson). Female astronauts also contribute to the exploration same as male astronauts. 
+According to figure \@ref(fig:gender), while women have also appeared in space exploration, men have been the main force in this 49-year period. However, we cannot ignore the contribution of female astronaut in space exploration. @jacksona2019women indicated that women has preformed essential work in astronautical area since 19th century. Furthermore, @jacksona2019women also illustrated that the first women travelled into space was in 1963, and the first American female astronaut appeared in 1983. Female astronauts also contribute to the exploration same as male astronauts. 
 
 ```{r gender, fig.cap="Astronaut gender amount comparison"}
 gender <- astronauts %>%
@@ -157,6 +162,17 @@ astronauts %>%
   ggtitle("Global Gender Share")
 ```
 
-Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, the possibilities and need for more females in astronautical exploration have been considered in the worldwide today (Jackson). Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
+Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
+
+# Acknowledgement
+
+The programming language used to analyse the trends of global astronautical exploration is R (4.0.2) [@R]. 
+
+Following packages has been included in our Rmd file.
+
+- package tidyverse (1.3.0) [@tidyverse],
+- package dplyr (1.0.1) [@dplyr],
+- package plotly (4.9.2.1) [@plotly],
+- package ggplot2 (3.3.2) [@ggplot2]
 
 # References
