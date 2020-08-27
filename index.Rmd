@@ -156,7 +156,7 @@ EVA_number_year %>%
   geom_bar(stat="identity") +
   theme(panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),axis.line = element_line(colour = "black")) +
   ylab("Number of EVA") +
-  ggtitle("Number of extravehicular (EVA) operations per year")
+  ggtitle("Number of Extravehicular (EVA) Operations per Year")
 ```
 
 
@@ -242,7 +242,7 @@ mission1 <- mission %>%
 ggplot(mission1, aes(year_of_mission, proportion, Categories, fill = Categories)) +
   geom_bar(stat="identity",position="fill") +
   scale_fill_manual("Categories", values = c("96 to 480h" = "#F5B041", "< 96h" = "#F5CBA7", "> 480h" = "#D35400")) +
-  ggtitle("Proportion of space travelers that participated in short, intermediate and long spaceflights")+
+  ggtitle("Proportion of Space Travelers that Participated in Short, Intermediate and Long Spaceflights")+
   theme(panel.grid.major=element_line(colour=NA)) +
   xlab("Year") +
   ylab("Proportion of Astronauts") +
