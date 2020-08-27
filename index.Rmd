@@ -164,6 +164,13 @@ astronauts %>%
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
+# Conclusions 
+
+In conclusion, Human shows their interesting and enthusiasm for universe. The astronautical exploration projects and missions experienced a increase trend since the first humans appeared in the universe. And there were a space exploration rush lasted almost 24 years in the world. In that period, the number of project and mission are the highest level from 1961 to today. Meanwhile, many countries also join in the project of the astronautical exploration, which might contribute the development of the space exploration. 
+
+In addition, female astronauts also appear in the history of astronautical exploration. Although male astronauts are still the main force in the universe, the number of female astronauts trend to increase from 20th century. And the appear of female astronauts might change the history of space exploration and help human with the exploration.
+
+
 # Acknowledgement
 
 The programming language used to analyse the trends of global astronautical exploration is R (4.0.2) [@R]. 
