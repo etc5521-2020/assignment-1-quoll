@@ -35,7 +35,8 @@ astronauts <- read.csv(here::here("data/astronauts.csv"))
 
 # Introduction and motivation
 
-[FILL] Give the bigger picture of the data, and inspire the reader to learn more about the problem by reading your analysis. 
+Since the first humans completed an orbital spaceflight in 1961 and stepped on the moon in 1969, space missions have been completed nearly 60 years (Corlett, Stavnickuk & Komarova, 2020). Meanwhile, space exploration is still technologically challenging and competitive. Therefore, this report mainly analyses the development of the world astronautic exploration with time from the first spaceflight launched and the other analyses include the trend in astronautic exploration, the tech of astronautic exploration development and trend of female astronauts developed. In the following sections, we will describe the data set and source of the data, and what is the data prepared for. The data description also includes how we transform and clean the raw data for analysis. Our statistical programming used for analysis is _R_ and _Rstudio_. 
+
 
 # Data description
 
@@ -169,6 +170,8 @@ ggplot(mission1, aes(year_of_mission, proportion, Categories, fill = Categories)
   ylab("Proportion of Astronauts") +
   theme(text = element_text(size = 9), axis.title.x = element_text(size = 12), axis.title.y = element_text(size = 12))
 ```
+# Conclusion
+Through the spaceflight activities of space travelers exploration, the overall EVA number steadily increased ten years before, but it decreased in recent years. However, it does not mean the development of the spaceflights is regressing. Since the launch of the ISS program in 1998, the duration of almost each mission task is more than 480 hours.
 
 
 # References
