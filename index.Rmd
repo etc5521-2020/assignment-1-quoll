@@ -1,6 +1,6 @@
 ---
 title: "ETC5521 Assignment 1"
-subtitle: "Global Astronautical exploration trends"
+subtitle: "Global astronautical exploration development"
 team: quoll
 author:
   - Jinhao Luo
@@ -40,7 +40,8 @@ astronauts <- read.csv(here::here("data", "astronauts.csv"))
 
 @corlett2020population indicated that since the first humans completed an orbital spaceflight in 1961 and stepped on the moon in 1969, space missions have been completed nearly 60 years. Meanwhile, space exploration is still technologically challenging and competitive. Therefore, this report would try to analyses the development of the world astronautic exploration from 1961. In the following sections, we will describe the data set and source of the data, and what is the data prepared for. The data description also includes how we transform and clean the raw data for analysis. Beside, our statistical programming used for analysis is R and Rstudio. However, the data set might be not comprehensive, which might result in insufficient analysis and conclusion. Meanwhile, some missing values also included in the data, which might impact on the accuracy of the report. Such limitation should be considered and improved in following analysis.
 
-Based on the purpose of finding the development of astronautical exploration, this report would consider a primary question and three secondary questions. The primary question will focus on the development of the world astronautic exploration with time from the first spaceflight launched. In addition, the three secondary questions should be: Firstly, When does astronautic exploration become more competitive? Secondly, How is the tech of astronautic exploration development? Thirdly,  Do females also play an important role in astronautic exploration, when does the first female astronaut appear in international astronautic exploration?
+Based on the purpose of finding the development of astronautical exploration, this report would consider a primary question and three secondary questions. The primary question will focus on the development of the world astronautic exploration with time from the first spaceflight launched. In addition, the three secondary questions should be: Firstly, What has been the trend in astronautic exploration over the last eight-five years? Secondly, How is the technology of astronautic exploration development? Thirdly, Do females also contribute to astronautic exploration? What's the trend of female astronauts? Those questions would be explored in following part. 
+
 
 # Data description
 
@@ -50,7 +51,7 @@ By browsing the whole dataset and using the glimpse function to observe the vari
 
 # Analysis and findings
 
-To overview the global astronautical exploration trends, we first look at the changes of the astronautical exploration projects since the first human being to explore the outer space. Furthermore, human’s enthusiasm for exploring the space is also reflected on the tech of astronautic exploration development. Last but not least, although men as the main force in spaceflights, female also played an important role in recent years. The following sections will concentrate on three secondary questions to explore the global astronautical exploration trends. 
+The first human orbital spaceflight has completed 59 years ago. To explore and identify the development of global astronautical exploration, the report would consider the changes of the astronautical exploration projects and missions since the 1961. Meanwhile, the number of country that join the exploration would also be considered to identify the development of the astronautical exploration. Furthermore, the enthusiasm of human for exploring the space could be reflected on the tech of astronautic exploration development. Last but not least, the trends of gender of astronauts would be used for consider the development situation. The following sections will focus on three secondary questions to explore and support the development situation of global astronautical exploration. 
 
 ## Trends in the astronautical exploration
 
@@ -285,7 +286,7 @@ Overall, female astronauts have started to appear frequently in the space explor
 
 # Conclusions 
 
-From the first humans have accomplished an orbital spaceflight in 1961 (@corlett2020populatio), to the intensity of launched reached a record figure in 1980s, the astronautical industry has experienced a continuous development. The interesting and enthusiasm of human for universe have prompted the development of astronautical industry. Whether based on the number of projects and missions launched for astronautical exploration, as well as the appearance of female astronauts and more countries join in the space exploration, the astronautical industry has showed the great development to human. 
+From the first humans have accomplished an orbital spaceflight in 1961 (@corlett2020population), to the intensity of launched reached a record figure in 1980s, the astronautical industry has experienced a continuous development. The interesting and enthusiasm of human for universe have prompted the development of astronautical industry. Whether based on the number of projects and missions launched for astronautical exploration, as well as the appearance of female astronauts and more countries join in the space exploration, the astronautical industry has showed the great development to human. 
 
 The astronautical exploration projects and missions experienced a increase trend since the first humans appeared in the universe. And there were a space exploration rush lasted almost 24 years in the world. In that period, the number of project and mission are the highest level from 1961 to today. Meanwhile, many countries also join in the project of the astronautical exploration, which might contribute the development of the space exploration. 
 
