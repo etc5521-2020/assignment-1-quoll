@@ -46,9 +46,11 @@ Based on the purpose of finding the development of astronautical exploration, th
 
 The data which are used for analysing in this report are from the astronaut database. Because only one website could not contain comprehensive and up-to-date astronautic information. Therefore, this database was collected from NASA, Roscosmos, and fun-made websites, which includes information about the space mission before 15 January 2020. Furthermore, this data contains 24 different types of information about 1277 astronauts which are name, sex, year of birth, nationality, military status, the name and year of selection program, information about each mission implemented by astronaut such as year, title, ascend and decent shuttle names, duration of mission and extravehicular activity (EVAs). The version of data has been updated on 14 July 2020, which contains the astronautic information from 1961 to 2019. The data used in this report was read from the TidyTuesdayR package, and it has been saved in a new csv file called astronaut for later use.
 
-By browsing the whole dataset and using the glimpse function to observe the variables and the corresponding classes by R, this report decides to apply this dataset into analysing the development of the astronautic industry. Meanwhile, according to the observation, the report would try to use several important and useful variables to explore the development of the astronautic industry as much as possible, like the year, number, and duration of missions, proportion of space travellers, the number of extravehicular activity and the gender of astronauts. In addition, some missing values and inappropriate classes of variables have been found, which would be considered in the following analysing part.
+By browsing the whole dataset and using the glimpse function to observe the variables and the corresponding classes by R, this report decides to apply this dataset into analysing the development of the astronautic industry. Meanwhile, according to the observation, the report would try to use several important and useful variables to explore the development of the astronautic industry as much as possible, like the year, number, and duration of missions, proportion of space travelers, the number of extravehicular activity and the gender of astronauts. In addition, some missing values and inappropriate classes of variables have been found, which would be considered in the following analysing part.
 
 # Analysis and findings
+
+To overview the global astronautical exploration trends, we first look at the changes of the astronautical exploration projects since the first human being to explore the outer space. Furthermore, human’s enthusiasm for exploring the space is also reflected on the tech of astronautic exploration development. Last but not least, although men as the main force in spaceflights, female also played an important role in recent years. The following sections will concentrate on three secondary questions to explore the global astronautical exploration trends. 
 
 ## Trends in the astronautical exploration
 
@@ -156,7 +158,7 @@ EVA_number_year %>%
   geom_bar(stat="identity") +
   theme(panel.grid.major =element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),axis.line = element_line(colour = "black")) +
   ylab("Number of EVA") +
-  ggtitle("Number of extravehicular (EVA) operations per year")
+  ggtitle("Number of Extravehicular (EVA) Operations per Year")
 ```
 
 
@@ -242,7 +244,7 @@ mission1 <- mission %>%
 ggplot(mission1, aes(year_of_mission, proportion, Categories, fill = Categories)) +
   geom_bar(stat="identity",position="fill") +
   scale_fill_manual("Categories", values = c("96 to 480h" = "#F5B041", "< 96h" = "#F5CBA7", "> 480h" = "#D35400")) +
-  ggtitle("Proportion of space travelers that participated in short, intermediate and long spaceflights")+
+  ggtitle("Proportion of Space Travelers that Participated in Short, Intermediate and Long Spaceflights")+
   theme(panel.grid.major=element_line(colour=NA)) +
   xlab("Year") +
   ylab("Proportion of Astronauts") +
