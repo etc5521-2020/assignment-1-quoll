@@ -142,7 +142,7 @@ countries_two %>%
 
 ### Number of extravehicular (EVA) operations per year
 
-This Figure \@ref(fig:plotEVA) describe the Number of extravehicular (EVA) operations per year. Add up all the EVA in the same year and make this bar chart. Since the first spacewalk performed by Alexei Leonov in 1965, the number of extravehicular activity (EVA) was performed steadily increased especially around year 2000 over than 300 times per year. After year 2000, the number of times of EVA has decreased, it does not mean that the development of spacefights is regressive. Figure \@ref(fig:plotmissionhours) shows the execution duration for each mission and the results is dramatically increased.  
+This Figure \@ref(fig:plotEVA) describe the Number of extravehicular (EVA) operations per year. Add up all the EVA in the same year and make this bar chart. Since the first spacewalk performed by Alexei Leonov in 1965, the number of extravehicular activity (EVA) was performed steadily increased especially around year 2000 over than 300 times per year. After year 2000, the number of times of EVA has decreased, it does not mean that the development of spaceflights is regressive. Figure \@ref(fig:plotmissionhours) shows the execution duration for each mission and the results is dramatically increased.  
 
 ```{r select-raw-data}
 EVA_number_year <- astronauts %>%
@@ -165,7 +165,7 @@ EVA_number_year %>%
 
 ### Proportion of Space Travelers in Different Spaceflights
 
-Based on the article written by Corlett,  Stavnichuk and Komarova in 2020, divided the duration of mission hours into three categories could observe the progress of space traveler more intuitively. These three categoris include pariticipant short spacelights less than 96 hours, intermediate spaceflights between 96 to 480 hours and long spaceflights more than 480 hours. When the spaceflights first developed, all the duration of mission is less than 96 hours. After that the time astronauts spent in space increased through the spaceflights histories. The recent trend is the time spent on each mission exceeds 480 hours which shows in Figure \@ref(fig:plotmissionhours). @NASA explained the potential reason related to the launch of the International Space Station (ISS) program in 1998. 
+Based on the article written by Corlett,  Stavnichuk and Komarova in 2020, divided the duration of mission hours into three categories could observe the progress of space traveler more intuitively. These three categories include participant short spaceflights less than 96 hours, intermediate spaceflights between 96 to 480 hours and long spaceflights more than 480 hours. When the spaceflights first developed, all the duration of mission is less than 96 hours. After that the time astronauts spent in space increased through the spaceflights histories. The recent trend is the time spent on each mission exceeds 480 hours which shows in Figure \@ref(fig:plotmissionhours). @NASA explained the potential reason related to the launch of the International Space Station (ISS) program in 1998. 
 
 ```{r total-astronausts}
 total_astronauts <- astronauts %>%
