@@ -312,6 +312,7 @@ Following packages has been included in our Rmd file.
 ## Plots and tables
 - In terms of the timeline, we can look at it through 'decades' instead of years to compare trends
 - Improve figure captions that gives a brief summary of the plot
+- Modify axis and legend names
 - Set a common theme for the plots
 - Add numerical summary that articulate the results of the plots
 - Make plot colours more consistent
@@ -325,6 +326,15 @@ Following packages has been included in our Rmd file.
 - Improve introduction by telling reader some background of the astronauts
 
 # New Question What are the trends for the collaboration among countries?
+
+Original report stated:
+> "global astronautical exploration competition between each government is fierce, and the competition has reached the peak in 1985"
+
+- To expand on this point, I will assess the collaboration of astronauts across all the different countries over the years to see if astronauts work with different nationalities.
+  - Did global competition between countries diminish over the years?
+  - As most astronauts are made up of U.S. astronauts and cosmonauts (Russian astronauts), in which year did we see the most collaboration between them?
+  - Further, in Figure 3.4, Astronauts outside of U.S. astronauts and cosmonauts emerged only in the late 1970s. Based on the little experience, do they work in groups exclusively within their country or do they work together with U.S. astronauts and cosmonauts, who has significantly more experience?
+
 
 ```{r sample-wrangling, message = FALSE, include = FALSE}
 # Find missions with more than 1 astronaut
