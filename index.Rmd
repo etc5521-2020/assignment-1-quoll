@@ -283,6 +283,264 @@ astronauts %>%
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
+### Female Astronauts
+
+According to the \@ref(fig:gender) figure, we would like to explore more deeply the role of female astronauts in space missions. First of all, let us see how the female and male astronauts compare in total mission hour and extravehicular activity in space. If we look at Figure \@ref(fig:mission-hour-male-vs-female), two graphs show the comparison between the two. In general, female astronauts have less time than men, both on missions and extravehicular activity. The total number of days for men in (A) reaches almost 150,000 days while for women around 12,500 days. The same thing also happened to extravehicular activities (B) where the total days of women did not reach 100 days, but men were more than 500 days.
+
+```{r mission-hour-male-vs-female, fig.cap="These two charts show the ratio of male and female astronauts in mission duration in days. The X-axis shows gender, while the y-axis shows the number of days. (A) By mission days, female have much lower duration than male, (B) In the total extravehicular activity, male have much longer to do the activity than female.", out.height="50%"}
+
+library(patchwork) #load library patchwork to combine image
+mission_hrs <- astronauts %>%
+  #create new column day of mission
+  mutate(day_of_mission = total_hrs_sum / 24) %>%
+  # plot the data
+  ggplot(aes(x = sex, y = day_of_mission, fill = sex)) +
+  geom_col() +
+  xlab("") +
+  theme_minimal() +
+  # assign theme with no grid lines in the plot
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  # add tag 
+  labs(tag = "(A)", y = "Total Mission Length (in day)", color = "Sex")
+
+eva_hrs <- astronauts %>%
+   #create new column day of mission
+  mutate(day_of_mission = total_eva_hrs / 24) %>%
+  # plot the data
+  ggplot(aes(x = sex, y = day_of_mission, fill = sex)) +
+  geom_col() +
+  xlab("") +
+  theme_minimal() +
+  # assign theme with no grid lines in the plot
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none"
+  ) +
+  # add tag
+  labs(tag = "(B)", y = "Total Extravehicular Activity (in day) ", color = "Sex")
+
+# combine the image together side by side with the tags
+mission_hrs + eva_hrs + plot_layout(guides = "collect")
+```
+
+Next, we want to map each astronaut who has undergone a space mission based on mission duration, gender, and nationality. Figure \@ref(fig: astro-plotly) is an interactive plot that can be changed based on nationality. The x-axis shows the mission duration and the y-axis shows the name. Each point in this scatter plot represents one astronaut's name.
+
+
+```{r astro-plotly}
+# create the button attributes with restyle method from plotly
+button_list <-
+  lapply(1:length(unique(astronauts$nationality)), function(x) {
+    list(
+      method = "restyle",
+      args = list(paste0("transforms[0].value"), unique(astronauts$nationality)[x]),
+      label = unique(astronauts$nationality)[x]
+    )
+  })
+
+# assign the model and layout of the button, here we used dropdown.
+type_list <-  list(
+  type = 'dropdown',
+  active = -1,
+  xanchor = 'right',
+  yanchor = "top",
+  pad = list('r' = 0, 't' = 10, 'b' = 10),
+  x = 1.2,
+  y = 1.2,
+  buttons = button_list # assign button_list object to buttons
+)
+
+# the theme of y axis
+axy <- list(
+  title = "Name",
+  zeroline = FALSE,
+  showline = TRUE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+# the theme of x axis
+axx <- list(
+  title = "Total Mission in Hours",
+  zeroline = FALSE,
+  showline = TRUE,
+  showticklabels = TRUE,
+  showgrid = FALSE
+)
+
+# make scatter plot using plotly
+plot_ly(
+  astronauts,
+  x = ~total_hrs_sum,
+  y = ~name,
+  # assign nationality column as object named customdata
+  customdata=~nationality,
+  type = "scatter",
+  mode = "markers",
+  # the point will be colored based on the sex
+  color = ~sex,
+  # assign color palletes
+  colors = c("#FF6666", "#00CCCC"),
+  # assign the info when hovering the point
+   text = ~ paste('</br> Name: ',name,
+                  '</br> Nationality: ',nationality,
+                  '</br> Total Hours: ',total_hrs_sum),
+   hoverinfo = "text",
+  # assign the filter and the target
+  transforms = list(
+    list(
+      type = 'filter',
+      target = 'customdata',
+      operation = '=',
+      value = astronauts$nationality
+    )
+  )
+) %>%
+  # modify layout of the plot
+  layout(updatemenus = list(type_list),
+         xaxis = axx,
+         yaxis = axy,
+         title = "Every Single Astronaut's Time") %>%
+  # hide the plotly ModeBar 
+   config(displayModeBar = FALSE)
+
+```
+
+
+```{r female-mission}
+# data for male vs male in mission duration
+plot_mission <- astronauts %>%
+  # group the data by name and summarised them by sex, nationality, and total hours
+  group_by(name) %>%
+  summarize(sex = sex,
+            nationality = nationality,
+            total_hrs_sum = total_hrs_sum) %>%
+  unique() %>%
+  # arrange from highest to lowest based on total hours
+  arrange(desc(total_hrs_sum)) %>%
+  # create the new variable day of mission by divide total hour with 24
+  mutate(day_of_mission = total_hrs_sum / 24) %>%
+  # only take 15 highest data
+  head(15) %>%
+  # plot the data
+  ggplot(aes(
+    x = fct_reorder(name, total_hrs_sum),
+    y = day_of_mission,
+    color = sex
+  )) +
+  geom_point(size = 2) +
+  geom_segment(aes(
+    x = name,
+    xend = name,
+    y = 0,
+    yend = day_of_mission
+  ), size = 1.2) +
+  theme_minimal() +
+  ggtitle("Space Mission")+
+  theme( panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    text=element_text(size=10),
+    axis.title.y = element_blank(),
+    plot.title = element_text(size=11),
+    plot.title.position = "plot")+
+  ylab("Mission in days")+
+  labs(tag = "(A)")+
+  coord_flip()
+  
+```
+
+```{r female-eva-mission}
+# data for male vs male in eva duration
+plot_eva <- astronauts %>%
+  # group the data by name and summarised them by sex, nationality, and total hours
+  group_by(name) %>%
+  summarize(sex = sex,
+            nationality = nationality,
+            total_eva_hrs = total_eva_hrs) %>%
+  unique() %>%
+  # arrange from highest to lowest based on total hours
+  arrange(desc(total_eva_hrs)) %>%
+    # create the new variable day of mission by divide total hour with 24
+  mutate(day_of_mission = total_eva_hrs / 24) %>%
+    # only take 15 highest data
+  head(15) %>%
+  # plot the data
+  ggplot(aes(
+    x = fct_reorder(name, day_of_mission),
+    y = day_of_mission,
+    color = sex
+  )) +
+  geom_point(size = 2) +
+  geom_segment(aes(
+    x = name,
+    xend = name,
+    y = 0,
+    yend = day_of_mission
+  ), size = 1.2) +
+  theme_minimal() +
+  ggtitle("Eva Activity")+
+  theme( panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.title.y = element_blank(),
+    text=element_text(size=10),
+    plot.title = element_text(size=11),
+    plot.title.position = "plot")+
+  ylab("Mission in days")+
+  labs(tag = "(B)")+
+  coord_flip()
+```
+
+```{r, out.width="100%"}
+# combined the plots side by side
+plot_mission+plot_eva+plot_layout(guides = "collect", heights = 100)
+```
+
+```{r, figures-side, fig.show="hold", out.width="50%"}
+astronauts %>%
+  group_by(sex, military_civilian) %>%
+  tally() %>%
+  ggplot(aes(x = sex, y = n, fill = sex)) +
+  geom_col() +
+  facet_grid( ~ military_civilian)+
+  theme_minimal() +
+  theme( panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+
+astronauts$occupation[astronauts$occupation == "Other (space tourist)"] <-
+  "Space Tourist"
+astronauts$occupation[astronauts$occupation == "Space tourist"] <-
+  "Space Tourist"
+astronauts$occupation[astronauts$occupation == "Other (Space tourist)"] <-
+  "Space Tourist"
+astronauts$occupation <- tools::toTitleCase(astronauts$occupation)
+
+astronauts %>%
+  group_by(sex, occupation) %>%
+  tally() %>%
+  ggplot(aes(x = sex, y = n, fill = sex)) +
+  geom_col() +
+  facet_wrap( ~ occupation)+
+  theme_minimal()
+```
+
+```{r crosstab}
+astronauts %>%
+  group_by(sex, occupation) %>%
+  tally() %>%
+  pivot_wider(names_from = "sex", values_from = "n") %>%
+  replace_na(list(female = 0)) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling()
+```
+
 
 # Conclusions 
 
