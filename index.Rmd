@@ -497,10 +497,69 @@ plot_eva <- astronauts %>%
   coord_flip()
 ```
 
-```{r, out.width="100%"}
+From the interactive plot above, at a glance, we can see that there is a female astronaut who has a high enough mission time. Therefore, we will next present the 15 astronauts with the highest mission duration and spacewalk. In Figure \ @ref (fig: astro-15) there are two plots A and B. Plot A shows the space mission while plot B shows extravehicular activity among astronauts. In Plot A, there is one female astronaut who is in ninth place, namely Peggy A. Whitson. Peggy has gone on space expeditions for a total of 665 days. Also, in plot B, we can see that Peggy is in fourth place in the spacewalk mission with a total time of 2.5 days. Another woman Astonot is Sunita L. Williams who is in tenth place. Sunita set out on a mission in 2006 and 2012 with a total extravehicular activity time of 2 days.
+
+```{r astro-15, out.width="100%", out.height="60%"}
 # combined the plots side by side
 plot_mission+plot_eva+plot_layout(guides = "collect", heights = 100)
 ```
+
+Peggy A. Whitson and Sunita L. Williams in Figure \@ref (fig:whitson-sunita), are American astronauts. Reporting from NASA, "Peggy completed two six-month tours of duty aboard the station for Expedition 5 in 2002, and as the station commander for Expedition 16 in 2008 where she accumulated 377 days in space between the two missions, the most for any US. woman at the time of her return to Earth. " @mars_peggy_2015 Another interesting fact from Peggy is, In 2008, Whitson returned on Expedition 16 and became the first female commander of the space station. @potter_record-setting_2018 Peggy announced her retirement on June 16, 2018. @potter_record-setting_2018
+
+Sunita L Williams is a female astronaut selected by NASA in 1998 who has carried out two space missions Expeditions 14/15 and 32/33. @whiting_sunita_2016 Reported by NASA, now he is preparing for her third long-duration mission aboard the International Space Station. @whiting_sunita_2016
+
+```{r whitson-sunita, fig.align='center', fig.cap=' **Left** : Peggy A. Whitson (Ph.D.), the U.S. record holder, placing eighth on the all-time space endurance list. **Right** : Sunita L. Williams, a veteran of two space missions Expeditions 14/15 and 32/33 (source:NASA)'}
+library(imager)
+# im <- load.image("data/whitson-sunita.png")
+# plot(im, axes = 0)
+
+library(png)
+img <- readPNG("data/whitson-sunita.png")
+grid::grid.raster(img)
+```
+
+Apart from Peggy and Sunita, there are many female astronauts from various countries who have carried out space missions. The rest can be seen in Table 3 below.
+
+```{r}
+library(DT)
+library(htmltools)
+# a custom table container
+sketch = htmltools::withTags(table(
+  class = 'display',
+  thead(
+    tr(
+      th(colspan = 2, 'Profile'),
+      th(colspan = 4, 'Mission Time'),
+    ),
+    tr(
+      lapply(rep(c('Name','Sex','Nationality','Mission', 'Extravehicular'), 1), th)
+    )
+  )
+))
+
+astronauts %>%
+  filter(sex=="female") %>%
+  # group the data by name and summarised them by sex, nationality, and total hours
+  group_by(name) %>%
+  summarize(sex = sex,
+            nationality = nationality,
+            total_hrs_sum = total_hrs_sum,
+            total_eva_hrs = total_eva_hrs) %>%
+  unique() %>%
+  # arrange from highest to lowest based on total hours
+  arrange(desc(total_hrs_sum)) %>%
+  datatable(class = 'cell-border stripe',
+          container = sketch,
+          rownames = FALSE,
+          filter = 'top',
+          selection="multiple",
+          escape=FALSE,
+          options = list(pageLength = 5, sDom  = '<"top">lrt<"bottom">ip'),
+          caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: center;','Table 3: ',
+                    em('List of Female Astronauts.')))
+```
+
+
 
 ```{r, figures-side, fig.show="hold", out.width="50%"}
 astronauts %>%
