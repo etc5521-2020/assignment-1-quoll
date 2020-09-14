@@ -5,13 +5,19 @@ team: quoll
 author:
   - Jinhao Luo
   - Yawen Zhang
+  - Brendi Ang
+  - Putu S
 date: "`r Sys.Date()`"
-bibliography: references.bib
-biblio-style: apa
 output: 
   bookdown::html_document2:
+    theme: flatly
     citation_package: biblatex
     toc: true
+    toc_float:
+      collapsed: yes 
+bibliography: references.bib
+biblio-style: apa
+link-citations: yes
 ---
 
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
@@ -21,6 +27,7 @@ knitr::opts_chunk$set(echo = FALSE, cache=FALSE, message=FALSE, warning=FALSE)
 
 library(tidyverse)
 library(dplyr)
+library(geomnet)
 library(plotly)
 library(ggplot2)
 ```
@@ -307,25 +314,7 @@ Following packages has been included in our Rmd file.
 - package ggplot2 (3.3.2) [@ggplot2]
 
 
-# How can the report improve?
-
-## Plots and tables
-- In terms of the timeline, we can look at it through 'decades' instead of years to compare trends
-- Improve figure captions that gives a brief summary of the plot
-- Modify axis and legend names
-- Set a common theme for the plots
-- Add numerical summary that articulate the results of the plots
-- Make plot colours more consistent
-- Add comments to codes for better reproducibility
-
-## Content
-- In section 3, instead of talking only about gender discrepancy, we can dig deeper by exploring sociodemographic factors.
-  - Are most astronauts in the military or civilian?
-  - What are the occupations these astronauts?
-  - These factors may tell us more about the difference in gender of astronauts.
-- Improve introduction by telling reader some background of the astronauts
-
-# New Question What are the trends for the collaboration among countries?
+# International Collaboration in Countries
 
 Original report stated:
 > "global astronautical exploration competition between each government is fierce, and the competition has reached the peak in 1985"
@@ -387,22 +376,66 @@ sample_cmbs <- sample %>%
          year_of_mission = year_of_mission.x) %>%
   select(-year_of_mission.y) # remove same variable
 
-# Group year into decade, split the 'evolution through time' by decade
+# If astronaut not from US or Russia, categorised as 'Other'
 sample_cmbs <- sample_cmbs %>%
-  # Categorise mission years into decades
-  mutate(mission_decade = case_when(
-    between(year_of_mission, 1960, 1969) ~ "1960s",
-    between(year_of_mission, 1970, 1979) ~ "1970s",
-    between(year_of_mission, 1980, 1989) ~ "1980s", 
-    between(year_of_mission, 1990, 1999) ~ "1990s",
-    between(year_of_mission, 2000, 2009) ~ "2000s", # International space station built in 1998
-    between(year_of_mission, 2010, 2019) ~ "2010s")
-  )
+  # First astronaut
+  mutate(nationality = if_else(condition = nationality %in% c("U.S.S.R/Russia", "U.S."),
+                               true = nationality,
+                               false = "Other"),
+         # Second astronaut
+         with_nationality = if_else(condition = with_nationality %in% c("U.S.S.R/Russia", "U.S."),
+                               true = nationality,
+                               false = "Other"),
+         # Categorise mission years into decades
+         mission_decade = case_when(
+           between(year_of_mission, 1960, 1969) ~ "1960s",
+           between(year_of_mission, 1970, 1979) ~ "1970s",
+           between(year_of_mission, 1980, 1989) ~ "1980s",
+           between(year_of_mission, 1990, 1999) ~ "1990s",
+           between(year_of_mission, 2000, 2009) ~ "2000s",
+           between(year_of_mission, 2010, 2019) ~ "2010s"
+         )
+         )
+```
 
-# Filter to nationalities that doesn't match
+```{r network-graph, echo = FALSE, message = FALSE, fig.height = 8, fig.width = 12}
+set.seed(10001)
+
 sample_cmbs %>%
-  rowwise() %>%
-  filter(nationality != with_nationality) 
+  ggplot() +
+  geom_net(aes(from_id = name,
+               to_id = with_name,
+               colour = nationality,
+               group = mission_title),
+           layout.alg = "fruchtermanreingold",
+           alpha = 0.05,
+           labelon = FALSE,
+           size = 1.5, # increase size of dot points
+           linewidth = 0.2,
+           ecolour = "grey60", # Change edge colour
+           ealpha = 0.5) +
+  scale_colour_manual(values = c("#b7ff49", "#92b4f2", "#df9797")) +
+  facet_wrap(~ mission_decade,
+             ncol = 3) +
+  labs(color = "Austronaut's Nationality",
+       # Change legend title
+       title = "International Collaboration of Astronauts in Space Missions Across the Decades",
+       subtitle = "In Space Missions with 2 or more Astronauts") + 
+  theme_net() +
+  theme(legend.position = "bottom", 
+        legend.direction = "horizontal", # Adjust legend layout
+        legend.title = element_text(color = "white", size = 10), # Change size of text in legend title
+        legend.text = element_text(color = "white", size = 10), # Change size of text in legend title
+        legend.background = element_rect(fill = "#3d3d3d"), # change legend background
+        legend.key.size = unit(1, "cm"), # Adjust size of legend
+        plot.background = element_rect(fill = "#4e5a65"), # grey background for plot
+        plot.title = element_text(size = 20, face = "bold", colour = "white"), # Adjust title
+        plot.subtitle = element_text(size = 15, face = "italic", colour = "white"), # Adjust subtitle
+        strip.text.x = element_text(size = 12, colour = "white"), # Change facet labels
+        strip.background = element_rect(fill="#474747") # Change facet background 
+  ) +
+  guides(color = guide_legend(override.aes = list(size = 5))) # Adjust size of shape in legend key
+
 ```
 
 
