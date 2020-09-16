@@ -283,7 +283,7 @@ astronauts %>%
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
-### Female Astronauts
+### Is there any female astronauts that have longer mission duration?
 
 According to the \@ref(fig:gender) figure, we would like to explore more deeply the role of female astronauts in space missions. First of all, let us see how the female and male astronauts compare in total mission hour and extravehicular activity in space. If we look at Figure \@ref(fig:mission-hour-male-vs-female), two graphs show the comparison between the two. In general, female astronauts have less time than men, both on missions and extravehicular activity. The total number of days for men in (A) reaches almost 150,000 days while for women around 12,500 days. The same thing also happened to extravehicular activities (B) where the total days of women did not reach 100 days, but men were more than 500 days.
 
@@ -330,7 +330,7 @@ eva_hrs <- astronauts %>%
 mission_hrs + eva_hrs + plot_layout(guides = "collect")
 ```
 
-Next, we want to map each astronaut who has undergone a space mission based on mission duration, gender, and nationality. Figure \@ref(fig: astro-plotly) is an interactive plot that can be changed based on nationality. The x-axis shows the mission duration and the y-axis shows the name. Each point in this scatter plot represents one astronaut's name.
+Next, we want to map each astronaut who has undergone a space mission based on mission duration, gender, and nationality. Figure \@ref(fig:astro-plotly) is an interactive plot that can be changed based on nationality. The x-axis shows the mission duration and the y-axis shows the name. Each point in this scatter plot represents one astronaut's name.
 
 
 ```{r astro-plotly}
@@ -497,14 +497,14 @@ plot_eva <- astronauts %>%
   coord_flip()
 ```
 
-From the interactive plot above, at a glance, we can see that there is a female astronaut who has a high enough mission time. Therefore, we will next present the 15 astronauts with the highest mission duration and spacewalk. In Figure \ @ref (fig: astro-15) there are two plots A and B. Plot A shows the space mission while plot B shows extravehicular activity among astronauts. In Plot A, there is one female astronaut who is in ninth place, namely Peggy A. Whitson. Peggy has gone on space expeditions for a total of 665 days. Also, in plot B, we can see that Peggy is in fourth place in the spacewalk mission with a total time of 2.5 days. Another woman Astonot is Sunita L. Williams who is in tenth place. Sunita set out on a mission in 2006 and 2012 with a total extravehicular activity time of 2 days.
+From the interactive plot above, at a glance, we can see that there is a female astronaut who has a high enough mission time. Therefore, we will next present the 15 astronauts with the highest mission duration and spacewalk. In Figure \@ref(fig:astro-15) there are two plots A and B. Plot A shows the space mission while plot B shows extravehicular activity among astronauts. In Plot A, there is one female astronaut who is in ninth place, namely Peggy A. Whitson. Peggy has gone on space expeditions for a total of 665 days. Also, in plot B, we can see that Peggy is in fourth place in the spacewalk mission with a total time of 2.5 days. Another woman Astonot is Sunita L. Williams who is in tenth place. Sunita set out on a mission in 2006 and 2012 with a total extravehicular activity time of 2 days.
 
 ```{r astro-15, out.width="100%", out.height="60%"}
 # combined the plots side by side
 plot_mission+plot_eva+plot_layout(guides = "collect", heights = 100)
 ```
 
-Peggy A. Whitson and Sunita L. Williams in Figure \@ref (fig:whitson-sunita), are American astronauts. Reporting from NASA, "Peggy completed two six-month tours of duty aboard the station for Expedition 5 in 2002, and as the station commander for Expedition 16 in 2008 where she accumulated 377 days in space between the two missions, the most for any US. woman at the time of her return to Earth. " @mars_peggy_2015 Another interesting fact from Peggy is, In 2008, Whitson returned on Expedition 16 and became the first female commander of the space station. @potter_record-setting_2018 Peggy announced her retirement on June 16, 2018. @potter_record-setting_2018
+Peggy A. Whitson and Sunita L. Williams in Figure \@ref(fig:whitson-sunita), are American astronauts. Reporting from @mars_peggy_2015, "Peggy completed two six-month tours of duty aboard the station for Expedition 5 in 2002, and as the station commander for Expedition 16 in 2008 where she accumulated 377 days in space between the two missions, the most for any US. woman at the time of her return to Earth." Another interesting fact from Peggy is that stated in @potter_record-setting_2018, In 2008, Whitson returned on Expedition 16 and became the first female commander of the space station. Also from @potter_record-setting_2018, Peggy announced her retirement on June 16, 2018. 
 
 Sunita L Williams is a female astronaut selected by NASA in 1998 who has carried out two space missions Expeditions 14/15 and 32/33. @whiting_sunita_2016 Reported by NASA, now he is preparing for her third long-duration mission aboard the International Space Station. @whiting_sunita_2016
 
@@ -559,19 +559,30 @@ astronauts %>%
                     em('List of Female Astronauts.')))
 ```
 
+We want to see the background of the female astronaut in the dataset. In Figure \@ref(fig:figures-side) two graphs show a summary of the background of the female astronaut. In figure (A), astronauts with a civilian background dominate the military. A total of 106 came from civilian and 37 from the military.
+Furthermore, in figure (B), 106 people who come from civilian are MSP (Mission Specialist). Mission Specialists are working closely with the commander and pilot, are responsible for coordinating onboard operations involving crew activity planning. @nasa_selection Furthermore, 20 people were flight engineers, 7 were pilots, 3 were flight commander, and 5 were PSP (Payload Specialist). Payload Specialist is a professional in the physical or life sciences or a technician skilled in operating Shuttle-unique equipment. @nasa_selection What is interesting about this plot is that there are two people who are Space Tourist.
+
+They are Anousheh Ansari, an American businesswoman and Lee So Yeon from South Korea. Reported by NASA, "American businesswoman Anousheh Ansari will fly with the Expedition 14 crew to the International Space Station as a spaceflight participant." @nasa_expedition She spent nine days on the station under a commercial agreement with the Russian Federal Space Agency (Roscosmos) and returned to Earth with the Expedition 13 crew. @nasa_expedition In that expedition, she was with Sunita Williams on board. @nasa_expedition
+
+Meanwhile, Lee So Yeon is the first South Korean female astronaut to fly into space. Reported by NASA, she was selected from among 36,000 applicants to serve as her nation's first astronaut. @angelillo_international_2012 Based on @angelillo_international_2012 She flew on Soyuz TMA-12 to the International Space Station (ISS) on April 8, 2008, returning to Earth 10 days later.
 
 
-```{r, figures-side, fig.show="hold", out.width="50%"}
+
+```{r figures-side, fig.cap="The bar graph shows female astronauts background, (A) More astronauts comes from civilian than military fields, (B) MSP is a dominant occupation and there are small number of Space Tourist", fig.show="hold", out.width="50%"}
 astronauts %>%
+  filter(sex=="female") %>%
   group_by(sex, military_civilian) %>%
   tally() %>%
-  ggplot(aes(x = sex, y = n, fill = sex)) +
+  ggplot(aes(x = military_civilian, y = n, fill = sex)) +
   geom_col() +
-  facet_grid( ~ military_civilian)+
   theme_minimal() +
   theme( panel.border = element_blank(),
     panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank())
+    panel.grid.minor = element_blank(),
+    legend.position = "none")+
+  ylab("")+
+  xlab("")+
+  labs(tag = "(A)", title = "Military Civilian Background")
 
 astronauts$occupation[astronauts$occupation == "Other (space tourist)"] <-
   "Space Tourist"
@@ -582,22 +593,25 @@ astronauts$occupation[astronauts$occupation == "Other (Space tourist)"] <-
 astronauts$occupation <- tools::toTitleCase(astronauts$occupation)
 
 astronauts %>%
+  filter(sex=="female") %>%
   group_by(sex, occupation) %>%
   tally() %>%
-  ggplot(aes(x = sex, y = n, fill = sex)) +
-  geom_col() +
-  facet_wrap( ~ occupation)+
-  theme_minimal()
+  ggplot(aes(x = fct_reorder(occupation,n), y = n, fill = sex)) +
+  geom_col()+
+  theme_minimal() +
+  theme( panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())+
+  ylab("")+
+  xlab("")+
+  labs(tags="(B)", title = "Occupation Background")
 ```
 
-```{r crosstab}
+```{r}
 astronauts %>%
+  filter(sex=="female") %>%
   group_by(sex, occupation) %>%
-  tally() %>%
-  pivot_wider(names_from = "sex", values_from = "n") %>%
-  replace_na(list(female = 0)) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling()
+  tally()
 ```
 
 
