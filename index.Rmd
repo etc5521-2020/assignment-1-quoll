@@ -13,6 +13,7 @@ output:
     theme: flatly
     citation_package: biblatex
     toc: true
+    number_sections: false
     toc_float:
       collapsed: yes 
 bibliography: references.bib
@@ -30,6 +31,17 @@ library(dplyr)
 library(geomnet)
 library(plotly)
 library(ggplot2)
+
+# Set theme for graphs
+our_theme <- theme(rect = element_rect(fill = "#4e5a65"),
+        text = element_text(color = "white", size = 10),
+        panel.background = element_rect(fill = "#4e5a65"),
+        axis.text = element_text(color = "white"),
+        panel.border = element_rect(color = "white", size = 0.8),
+        plot.title = element_text(size = 12, face = "bold", colour = "white"),
+        plot.subtitle = element_text(size = 15, face = "italic", colour = "white"),
+        axis.ticks = element_line(colour = "white")
+        )
 ```
 
 ```{r write-data, eval = FALSE}
@@ -45,12 +57,22 @@ astronauts <- read_csv(here::here("data", "astronauts.csv"))
 
 # Introduction and motivation
 
+Today, drones are a common sight in our skies, and the possibility of space tourism is at our fingertips.
+
+*Edit*: Redo intro
+*Edit*: Refine primary and secondary questions
+*Edit*: Find some interesting facts
+
 @corlett2020population indicated that since the first humans completed an orbital spaceflight in 1961 and stepped on the moon in 1969, space missions have been completed nearly 60 years. Meanwhile, space exploration is still technologically challenging and competitive. Therefore, this report would try to analyses the development of the world astronautic exploration from 1961. In the following sections, we will describe the data set and source of the data, and what is the data prepared for. The data description also includes how we transform and clean the raw data for analysis. Beside, our statistical programming used for analysis is R and Rstudio. However, the data set might be not comprehensive, which might result in insufficient analysis and conclusion. Meanwhile, some missing values also included in the data, which might impact on the accuracy of the report. Such limitation should be considered and improved in following analysis.
 
 Based on the purpose of finding the development of astronautical exploration, this report would consider a primary question and three secondary questions. The primary question will focus on the development of the world astronautic exploration with time from the first spaceflight launched. In addition, the three secondary questions should be: Firstly, What has been the trend in astronautic exploration over the last eight-five years? Secondly, How is the technology of astronautic exploration development? Thirdly, Do females also contribute to astronautic exploration? What's the trend of female astronauts? Those questions would be explored in following part. 
 
 
 # Data description
+
+- *edit*: point out that special characters could not be read-in, so we removed `original_name` variable  
+- *edit*: Only select variables relevant to the analysis, and describe them; remove variables not used
+
 
 The data which are used for analysing in this report are from the astronaut database. Because only one website could not contain comprehensive and up-to-date astronautic information. Therefore, this database was collected from NASA, Roscosmos, and fun-made websites, which includes information about the space mission before 15 January 2020. Furthermore, this data contains 24 different types of information about 1277 astronauts which are name, sex, year of birth, nationality, military status, the name and year of selection program, information about each mission implemented by astronaut such as year, title, ascend and decent shuttle names, duration of mission and extravehicular activity (EVAs). The version of data has been updated on 14 July 2020, which contains the astronautic information from 1961 to 2019. The data used in this report was read from the TidyTuesdayR package, and it has been saved in a new csv file called astronaut for later use.
 
@@ -64,60 +86,95 @@ The first human orbital spaceflight has completed 59 years ago. To explore and i
 
 ### Total Space Projects and Missions Embarked
 
-*edit*:
-- Instead of showing line graph, show bar plot
-- Remove plotly graph as it is not value-adding
-
-*edit: plot*
-- Add plot: Instead of showing total amount of projects, show total hours spent in missions through time
-  - Are there less space missions because astronauts are spending a longer time in space?
-
-@corlett2020population have indicated that humans have never stop their steps of space exploration. Since 1961 the first humans have accomplished an orbital spaceflight, many countries join the team of exploring the space. Therefore, identify the trend in astronautical exploration projects could help the readers realise the development of the space exploration. According to figure \@ref(fig:yearly-total-projects), the general trend of global space exploration projects is increase from 1961 to 1985. In 1985, the number of global project has reached the peak which 28 projects has been launched in this single year. After that the global project has experienced a significant decrease trend. Although the number of project has bounced to 14 in 1992, and fluctuated in the following seventeen years, the general trend of project amount is decrease after 1985. In general, based on figure \@ref(fig:yearly-total-projects) which might indicates that the global astronautical exploration competition between each government is fierce, and the competition has reached the peak in 1985. Although the amount has decreased after peak. The competition, however, still remained strong until 2009.
-  
-
-```{r yearly-total-projects, fig.cap= "Yearly astronauticalal exploration project amount in the world"}
-projects <- astronauts %>% 
-  select(year_of_mission, 
-         mission_title) %>%
-  group_by(mission_title) %>%
-  unique() %>%
-  ungroup() 
-
-
-yearly_projects <- projects %>% 
-  mutate(mission_title = as_factor(mission_title)) %>% 
-  group_by(year_of_mission) %>% 
-  summarise(total = length(mission_title)) %>%
-  ungroup()
-
-projects_plot <- yearly_projects %>%
-  ggplot(aes(year_of_mission, total)) +
-  geom_point() +
-  geom_line() + 
-  xlab("Year") +
-  ylab("Total") +
-  ggtitle("Global Yearly Project Amount")
-
-ggplotly(projects_plot)
+```{r yearly-total-projects}
+# Total projects Over the Years
+astronauts %>%
+  group_by(year_of_mission) %>%
+  tally() %>%
+  ggplot(aes(x = year_of_mission,
+               y = n)) +
+  geom_col(fill = "grey",
+           colour = "black") +
+  geom_smooth(method = "gam",
+              color = "#FFD900",
+              size = 0.8) +
+  scale_x_continuous(breaks = seq(from = 1960, to = 2020, by = 5),
+                     labels = seq(from = 1960, to = 2020, by = 5)) +
+  labs(x = "Year of Mission",
+       y = "Total Number of Missions",
+       title = "Total Number of Missions per Year") +
+  theme_linedraw() +
+  our_theme 
 ```
 
-Beside the number of projects, the mission amount which needed to be carried out by each shuttle launched could also be used for identifying the trends of astronautical exploration, because each mission in a project is for helping human to explore the universe. According to figure \@ref(fig:yearly-mission), it seems likely that there are four times of astronautical exploration rush in human history. In those period, humans set many missions to help the space exploration. The first rush happened in 1985. There were over 60 missions has been carried out in the space , and it was the peak for astronautical exploration. Human has started to show their enthusiasm for astronautical exploring. The duration and amount of mission has remained in a high level in the following thirty-year. Four years later after 1985, the second rush appeared and lasted thirteen years. In that period, average 40 missions has been carried out in universe per year. The third and forth peak also happened in the following years, which lasted three and two years, respectively. Although, the amount of missions decreased after 2009, the mission amount still remained in above 10 cases level per year until now. Overall, human never stop their steps to explore the space. astronautical exploration has experienced a increase trend from 1961 and remained in a high level for many years.
+Since the solo expedition of Yuri Alekseyevich Gagarin space mission on 12 April 1961 to the to the Apollo 11 lunar landing in 1969, mankind has grown a stark interest in space exploration (@corlett2020population). In this first mission, his capsule orbited the Earth for approximately 90 minutes before making a safe landing back on the planet; This marked a crucial step for the development of space exploration. 
 
-```{r yearly-mission, fig.cap= "Yearly astronautical exploration mission amount in the world (total mission in yearly projects)"}
-yearly_mission <- astronauts %>% 
-  group_by(year_of_mission) %>% 
-  summarise(total_mission = length(total_number_of_missions))
+Based on Figure \@ref(fig:yearly-total-projects), the total number of missions have increased gradually before decreasing at about year 2000. It can be observed that the total number of missions was at its peak in year 1985; This period was known as the era of the NASA space shuttle. Over three decades, this space shuttle program hosted a total of 135 flights, where the final shuttle flight, NASA's STS-135 landed on 21 July 2011 (@national2011preparing). It is manifest that the total number of missions dropped dramatically after the discontinuation of the program. 
 
-yearly_mission %>% 
-  ggplot(aes(year_of_mission, total_mission)) +
-  geom_col(fill = "#6cc5eb") + 
-  geom_line(lwd = 1, colour = "red") +
-  geom_text(aes(label=year_of_mission, angle = 90), size = 3, hjust = -0.1, vjust = 0.3, position = "stack") + 
-  ylim(0,70) + 
-  xlab("Year") + 
-  ylab("Total") + 
-  ggtitle("Global Yearly Mission Amount")
+Not to mention, Figure \@ref(fig:yearly-total-projects) shows a drastic decrease in space missions from 1985 to 1989 This is attributed to the Space Shuttle Challenger disaster, where the U.S. space shuttle broke apart 73 seconds into its flight, killing all seven crew members aboard (@challenger2019). For that reason, the Space Missions in the NASA space shuttle program were halted for two years, which caused the dramatic decline in space missions in 1986 - 1989.
+
+
+```{r yearly-mission-duration, fig.width = 8}
+# Total Duration (in hours) per Year
+astronauts %>%
+  ggplot(aes(x = year_of_mission,
+           y=total_hrs_sum)) +
+  geom_boxplot(aes(group = year_of_mission),
+               color = "black",
+               fill = "#d3d3d3",
+               width = 0.8,
+               outlier.color = "cornsilk",
+               outlier.alpha = 0.3,
+               outlier.size = 0.8
+               ) +
+  # Add Generalised additive model (GAM)
+  geom_smooth(method = "gam",
+              color = "#FFD900",
+              size = 0.5) +
+  labs(x = "Year Of Space Mission",
+       y = "Total Duration (in hrs) Spent in Space for a given Year",
+       title = "Total Duration of all missions for a Given Year") +
+  theme_linedraw() +
+  our_theme +
+  scale_x_continuous(breaks = seq(from = 1960, to = 2020, by = 5),
+                     labels = seq(from = 1960, to = 2020, by = 5))
 ```
+
+Although the total number of missions decreased, figure \@ref(fig:yearly-mission-duration) illustrates that the total number of hours increased progressively over the years. This implies that astronauts are spending more time in space. 
+
+This increase can be attributed to the fact that the international space station was completed...
+
+- Was there any breakthrough that cased the icnrease?
+
+
+## Lead Time Required to Train an Astronaut
+
+```{r First-flights, fig.height = 6}
+# filter to first space flights
+astronauts %>%
+  filter(total_number_of_missions == 1) %>%
+  group_by(year_of_mission) %>%
+  tally() %>%
+  ggplot(aes(x = year_of_mission,
+               y = n)) +
+  geom_col(fill = "grey",
+           colour = "black") +
+  geom_smooth(method = "lm",
+              color = "#FFD900",
+              size = 0.5) +
+  labs(x = "Year of Mission",
+       y = "Total Astronauts",
+       title = "Total Number of New Astronauts on Their First Mission") +
+  theme_linedraw() +
+  our_theme 
+```
+
+- Should we be expecting more astronauts?
+- What is the selection process like?
+- Train 1 year for a shuttle, 3-4 years for ISS.
+- Opening of ISS
+  - Annotate the opening of ISS?
+
 
 ### Participating Astronauts' Nationalities
 
@@ -126,43 +183,27 @@ yearly_mission %>%
   - Facet each decade into panels
 - Over the years, are there more astronauts from across the globe?
   - Plot world map to show more participating countries?
-  - Do a timeline animation?
-
-  
 
 In addition, an astronautical exploration race has launched along with the human desire for space. Figure \@ref(fig:countries-line-chart) and figure \@ref(fig:countries-bar-chart) indicate the astronautical mission amount trends of each country and global astronautical mission share of each country, respectively. According to figure \@ref(fig:countries-line-chart), the main forces of space exploration were United State and U.S.S.R, which were in the same level before 1981. After that, however, U.S. increased the mission amount significantly, and lead the world level over thirty-two years. On the other hand, based on figure \@ref(fig:countries-bar-chart), U.S. and U.S.S.R/Russia seem play an important role in astronautical exploration in the world. But U.S was still the leader in the astronautical field, and it has occupied the most astronautical exploration missions in the world. @blamont2005international explained that the awareness of universe, and technical advantage have contributed the leader level to United State. However, even though U.S. and U.S.S.R dominated the astronautical field from 1961 and 1977, there were some new countries join that field in 1978 based on figure \@ref(fig:countries-bar-chart). And after that the trend of new countries joining the universe exploration is increasing in general. In conclusion, although the technical advantages has increased the gaps of each country, and contributed the leader level to United State, many countries still join the astronautical exploration. And more and more countries would join in the exploration, which might become the trend.
 
-```{r countries-line-chart, fig.cap="Yearly mission amount of each countries"}
-countries <- astronauts %>%
-  group_by(year_of_mission,nationality) %>% 
-  summarise(total_mission = length(nationality)) %>%
-  ungroup() %>% 
-  mutate(nationality = ifelse(total_mission <4, "other", nationality))
-
-countries_plot <- countries %>%
-  ggplot(aes(year_of_mission, total_mission)) +
-  geom_line(aes(colour = nationality)) + 
-  labs(colour = "country") + 
-  xlab("Year") + 
-  ylab("Count") + 
-  ggtitle("Country Mission Amount")
-
-ggplotly(countries_plot)
-```
 
 ```{r countries-bar-chart, fig.cap="The global percentage of each country's mission"}
-countries_two <- astronauts %>%
-  select(nationality, year_of_mission) %>%
-  mutate(nationality = ifelse(nationality == "U.S." | nationality=="U.S.S.R/Russia", nationality, "other"))
-
-countries_two %>% 
+astronauts %>%
+  mutate(nationality = ifelse(nationality == "U.S." | nationality=="U.S.S.R/Russia", 
+                              nationality, 
+                              "other")) %>%
   ggplot() + 
-  geom_bar(aes(x = year_of_mission, fill = nationality), position = "fill") + 
-  scale_fill_manual(values = c("#eb3434", "#34bdeb", "#e2eb34")) + 
+  geom_bar(aes(x = year_of_mission, 
+               fill = nationality), 
+           colour = "black",
+           position = "fill",
+           alpha = 0.6) + 
+  scale_fill_manual(values = c("#52cc00","#92b4f2", "#df9797")) + 
   xlab("Year") + 
   ylab("Count") + 
-  theme_classic() + 
-  guides(fill = guide_legend(title = "country")) + 
+  theme_linedraw() + 
+  theme(legend.position = "bottom") +
+  our_theme +
   ggtitle("Global Mission Percentage")
 ```
 
@@ -337,10 +378,101 @@ Following packages has been included in our Rmd file.
 
 # International Collaboration Over the Years
 
-## Single Country Space Missions
+## Single-Country Space Missions 
 
+```{r}
+single_country_missions <- astronauts %>%
+  select(mission_title, nationality, year_of_mission) %>%
+  group_by(year_of_mission, mission_title) %>%
+  filter(n_distinct(nationality) == 1) %>%
+  summarise(total_single_country_missions = n())
 
+# Find total missions per year
+total_missions <- astronauts %>%
+  group_by(year_of_mission) %>%
+  summarise(total_missions = n()) %>%
+  ungroup() %>%
+  # Join with single country missions data frame
+  left_join(single_country_missions, by = "year_of_mission") 
 
+total_missions <- total_missions %>%
+  # Convert to numeric to replace NA
+  mutate(across(where(is.integer), as.numeric)) %>%
+  # Replace NAs with 0
+  mutate(total_single_country_missions = if_else(condition = is.na(total_single_country_missions), 
+                                                 true = 0,
+                                                 false = total_single_country_missions)) %>%
+  # Group numeric variables together
+  relocate(total_missions, .after = total_single_country_missions) 
+
+# Compute collaborated missions and proportion of single country missions
+total_missions <- total_missions %>%
+  mutate(total_collab_missions = total_missions - total_single_country_missions) %>%
+  relocate(total_collab_missions, .before = total_missions) 
+
+# Make long format for plotting
+total_missions_long <- total_missions %>%
+  pivot_longer(cols = total_single_country_missions:total_missions,
+               names_to = "mission",
+               values_to = "total_mission_count")
+
+total_missions_long %>%
+  filter(mission != "total_missions") %>%
+  ggplot() +
+  geom_col(aes(x = year_of_mission,
+               y = total_mission_count,
+               fill = mission),
+           stat = "identity",
+           position = "fill") + 
+  labs(x = "Year of Mission",
+       y = "Proportion of Single-country Missions") +
+  scale_fill_brewer() +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  our_theme +
+  theme(panel.grid = element_blank()) 
+```
+
+```{r, message = FALSE}
+# total countries per year
+pp <- astronauts %>%
+  mutate(nationality = if_else(condition = nationality %in% c("U.S.S.R/Russia", "U.S."),
+                               true = nationality,
+                               false = "Other")) %>%
+  group_by(year_of_mission, nationality) %>%
+  tally() %>%
+  ggplot() +
+  geom_col(aes(x = year_of_mission,
+               y = n,
+               fill = nationality),
+           alpha = 0.5) +
+  scale_fill_manual(values = c("Other" = "#b7ff49", "U.S." = "#92b4f2", "U.S.S.R/Russia" = "#df9797")) +
+  theme_linedraw() +
+  our_theme +
+  theme(panel.grid = element_blank(),
+        legend.position = "none") +
+  labs(y = "Total Space Missions",
+       x = "Year Of Mission",
+       title = "Country's Total Space Missions per Year") 
+
+ggplotly(pp)  
+
+# Total Number of participating countries (n_distinct)
+astronauts %>%
+  group_by(year_of_mission) %>%
+  summarise(distinct_countries = n_distinct(nationality)) %>%
+  ggplot(aes(x = year_of_mission,
+           y = distinct_countries)) +
+  geom_col(fill = "grey",
+           colour = "black") +
+  geom_smooth(method = "gam",
+              color = "#FFD900",
+              size = 0.5) +
+  theme_linedraw() +
+  our_theme +
+  labs(x = "Year of Mission",
+       y = "Total Participating Countries")
+```
 ## Collaboration between Countries 
 
 Original report stated:
@@ -425,8 +557,8 @@ sample_cmbs <- sample_cmbs %>%
          )
 ```
 
-```{r network-graph, echo = FALSE, message = FALSE, fig.height = 8, fig.width = 12}
-set.seed(10001)
+```{r network-graph, echo = FALSE, message = FALSE, fig.width = 12}
+set.seed(10001) 
 
 sample_cmbs %>%
   ggplot() +
@@ -462,7 +594,6 @@ sample_cmbs %>%
         strip.background = element_rect(fill="#474747") # Change facet background 
   ) +
   guides(color = guide_legend(override.aes = list(size = 5))) # Adjust size of shape in legend key
-
 ```
 
 *1970s*
@@ -485,9 +616,13 @@ sample_cmbs %>%
 - Reduced number of space missions 
 - Nodes are more closely tied together, signifying more cross-country collaboration. For instance, Russian astronauts are found all around the network.
 
+# Total Hours Spent in Space
+
+
+
+
+
+
+
 # References
-
-
-
-
 
