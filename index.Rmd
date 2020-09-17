@@ -34,6 +34,16 @@ write.csv(astronauts_origin, here::here("data", "astronauts.csv"))
 
 ```{r read-data}
 astronauts <- read.csv(here::here("data", "astronauts.csv"))
+
+our_theme <- theme(rect = element_rect(fill = "#4e5a65"),
+        text = element_text(color = "white", size = 10),
+        panel.background = element_rect(fill = "#4e5a65"),
+        axis.text = element_text(color = "white"),
+        panel.border = element_rect(color = "white", size = 0.8),
+        plot.title = element_text(size = 12, face = "bold", colour = "white"),
+        plot.subtitle = element_text(size = 15, face = "italic", colour = "white"),
+        axis.ticks = element_line(colour = "white")
+        )
 ```
 
 # Introduction and motivation
@@ -267,7 +277,9 @@ gender %>%
   ggplot() + 
   geom_bar(aes(sex, fill = sex)) + 
   xlab("gender") + 
-  ggtitle("Astronaut Gender Amount")
+  ggtitle("Astronaut Gender Amount") +
+  theme_linedraw()+
+  our_theme
 ```
 
 Female astronauts trend to increase in the space exploration. According to figure \@ref(fig:gender-percentage), although there was female astronauts appears in the space in 1963, there was a 20-year empty period for female astronauts until 1981. Such situation finished until 1982, and after that, female astronauts trend to increase in fluctuation along with year growing. And female astronauts have appeared in the astronautical exploration almost every year. 
@@ -278,8 +290,10 @@ astronauts %>%
   ggplot() + 
   geom_bar(aes(x = year_of_mission, fill = sex), position = "fill") + 
   xlab("year") + 
-  ggtitle("Global Gender Share")
-```
+  ggtitle("Global Gender Share") +
+  theme_linedraw()+
+  our_theme
+``` 
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
@@ -297,14 +311,9 @@ mission_hrs <- astronauts %>%
   ggplot(aes(x = sex, y = day_of_mission, fill = sex)) +
   geom_col() +
   xlab("") +
-  theme_minimal() +
-  # assign theme with no grid lines in the plot
-  theme(
-    panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "none"
-  ) +
+  theme_linedraw() +
+  # assign our theme
+  our_theme +
   # add tag 
   labs(tag = "(A)", y = "Total Mission Length (in day)", color = "Sex")
 
@@ -315,14 +324,9 @@ eva_hrs <- astronauts %>%
   ggplot(aes(x = sex, y = day_of_mission, fill = sex)) +
   geom_col() +
   xlab("") +
-  theme_minimal() +
-  # assign theme with no grid lines in the plot
-  theme(
-    panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "none"
-  ) +
+  theme_linedraw() +
+  # assign our theme
+  our_theme +
   # add tag
   labs(tag = "(B)", y = "Total Extravehicular Activity (in day) ", color = "Sex")
 
@@ -333,7 +337,7 @@ mission_hrs + eva_hrs + plot_layout(guides = "collect")
 Next, we want to map each astronaut who has undergone a space mission based on mission duration, gender, and nationality. Figure \@ref(fig:astro-plotly) is an interactive plot that can be changed based on nationality. The x-axis shows the mission duration and the y-axis shows the name. Each point in this scatter plot represents one astronaut's name.
 
 
-```{r astro-plotly}
+```{r astro-plotly, fig.cap="The interactive scatter plot with filter by nationality, x-axis shows mission duration in hours and y-axis represents name of the astronauts. Hover the point to look at the details of evry astronauts."}
 # create the button attributes with restyle method from plotly
 button_list <-
   lapply(1:length(unique(astronauts$nationality)), function(x) {
@@ -440,15 +444,11 @@ plot_mission <- astronauts %>%
     y = 0,
     yend = day_of_mission
   ), size = 1.2) +
-  theme_minimal() +
+  theme_linedraw() +
   ggtitle("Space Mission")+
-  theme( panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    text=element_text(size=10),
-    axis.title.y = element_blank(),
-    plot.title = element_text(size=11),
-    plot.title.position = "plot")+
+  our_theme + 
+  theme(legend.key = element_rect(fill = "#4e5a65"))+
+  theme(plot.title.position = "plot")+
   ylab("Mission in days")+
   labs(tag = "(A)")+
   coord_flip()
@@ -483,15 +483,11 @@ plot_eva <- astronauts %>%
     y = 0,
     yend = day_of_mission
   ), size = 1.2) +
-  theme_minimal() +
+  theme_linedraw() +
   ggtitle("Eva Activity")+
-  theme( panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    axis.title.y = element_blank(),
-    text=element_text(size=10),
-    plot.title = element_text(size=11),
-    plot.title.position = "plot")+
+  our_theme +
+  theme(legend.key = element_rect(fill = "#4e5a65"))+
+  theme(plot.title.position = "plot")+
   ylab("Mission in days")+
   labs(tag = "(B)")+
   coord_flip()
@@ -499,14 +495,14 @@ plot_eva <- astronauts %>%
 
 From the interactive plot above, at a glance, we can see that there is a female astronaut who has a high enough mission time. Therefore, we will next present the 15 astronauts with the highest mission duration and spacewalk. In Figure \@ref(fig:astro-15) there are two plots A and B. Plot A shows the space mission while plot B shows extravehicular activity among astronauts. In Plot A, there is one female astronaut who is in ninth place, namely Peggy A. Whitson. Peggy has gone on space expeditions for a total of 665 days. Also, in plot B, we can see that Peggy is in fourth place in the spacewalk mission with a total time of 2.5 days. Another woman Astonot is Sunita L. Williams who is in tenth place. Sunita set out on a mission in 2006 and 2012 with a total extravehicular activity time of 2 days.
 
-```{r astro-15, out.width="100%", out.height="60%"}
+```{r astro-15, fig.cap="The lollipop graph that shows fifteen top astronauts based on mission times and extravehicular activity. (A) Whitson Peggy is the only female astronauts that sit on big nine in longest mission time, (B) Whitson Peggy and William SUnita are the only female astronauts that have more extravehicular activity in top fifteen", out.width="100%", out.height="60%"}
 # combined the plots side by side
 plot_mission+plot_eva+plot_layout(guides = "collect", heights = 100)
 ```
 
-Peggy A. Whitson and Sunita L. Williams in Figure \@ref(fig:whitson-sunita), are American astronauts. Reporting from @mars_peggy_2015, "Peggy completed two six-month tours of duty aboard the station for Expedition 5 in 2002, and as the station commander for Expedition 16 in 2008 where she accumulated 377 days in space between the two missions, the most for any US. woman at the time of her return to Earth." Another interesting fact from Peggy is that stated in @potter_record-setting_2018, In 2008, Whitson returned on Expedition 16 and became the first female commander of the space station. Also from @potter_record-setting_2018, Peggy announced her retirement on June 16, 2018. 
+Peggy A. Whitson and Sunita L. Williams in Figure \@ref(fig:whitson-sunita), are American astronauts. Reported from @mars_peggy_2015, "Peggy completed two six-month tours of duty aboard the station for Expedition 5 in 2002, and as the station commander for Expedition 16 in 2008 where she accumulated 377 days in space between the two missions, the most for any US. woman at the time of her return to Earth." Another interesting fact from Peggy is that stated in @potter_record-setting_2018, in 2008, Whitson returned on Expedition 16 and became the first female commander of the space station. @potter_record-setting_2018 report that Peggy announced her retirement on June 16, 2018. 
 
-Sunita L Williams is a female astronaut selected by NASA in 1998 who has carried out two space missions Expeditions 14/15 and 32/33. @whiting_sunita_2016 Reported by NASA, now he is preparing for her third long-duration mission aboard the International Space Station. @whiting_sunita_2016
+@whiting_sunita_2016 explained that Sunita L Williams is a female astronaut selected by NASA in 1998 who has carried out two space missions Expeditions 14/15 and 32/33. Reported by @whiting_sunita_2016, now she is preparing for her third long-duration mission aboard the International Space Station. 
 
 ```{r whitson-sunita, fig.align='center', fig.cap=' **Left** : Peggy A. Whitson (Ph.D.), the U.S. record holder, placing eighth on the all-time space endurance list. **Right** : Sunita L. Williams, a veteran of two space missions Expeditions 14/15 and 32/33 (source:NASA)'}
 library(imager)
@@ -560,11 +556,11 @@ astronauts %>%
 ```
 
 We want to see the background of the female astronaut in the dataset. In Figure \@ref(fig:figures-side) two graphs show a summary of the background of the female astronaut. In figure (A), astronauts with a civilian background dominate the military. A total of 106 came from civilian and 37 from the military.
-Furthermore, in figure (B), 106 people who come from civilian are MSP (Mission Specialist). Mission Specialists are working closely with the commander and pilot, are responsible for coordinating onboard operations involving crew activity planning. @nasa_selection Furthermore, 20 people were flight engineers, 7 were pilots, 3 were flight commander, and 5 were PSP (Payload Specialist). Payload Specialist is a professional in the physical or life sciences or a technician skilled in operating Shuttle-unique equipment. @nasa_selection What is interesting about this plot is that there are two people who are Space Tourist.
+Furthermore, in figure (B), 106 people who come from civilian are MSP (Mission Specialist). Based on @nasa_selection , Mission Specialists are working closely with the commander and pilot, are responsible for coordinating onboard operations involving crew activity planning.  Furthermore, 20 people were flight engineers, 7 were pilots, 3 were flight commander, and 5 were PSP (Payload Specialist). @nasa_selection stated that Payload Specialist is a professional in the physical or life sciences or a technician skilled in operating Shuttle-unique equipment. What is interesting about this plot is that there are two people who are Space Tourist.
 
-They are Anousheh Ansari, an American businesswoman and Lee So Yeon from South Korea. Reported by NASA, "American businesswoman Anousheh Ansari will fly with the Expedition 14 crew to the International Space Station as a spaceflight participant." @nasa_expedition She spent nine days on the station under a commercial agreement with the Russian Federal Space Agency (Roscosmos) and returned to Earth with the Expedition 13 crew. @nasa_expedition In that expedition, she was with Sunita Williams on board. @nasa_expedition
+They are Anousheh Ansari, an American businesswoman and Lee So Yeon from South Korea. Reported in @nasa_expedition, "American businesswoman Anousheh Ansari will fly with the Expedition 14 crew to the International Space Station as a spaceflight participant." @nasa_expedition explained that she spent nine days on the station under a commercial agreement with the Russian Federal Space Agency (Roscosmos) and returned to Earth with the Expedition 13 crew. In that expedition, she was with Sunita Williams on board.
 
-Meanwhile, Lee So Yeon is the first South Korean female astronaut to fly into space. Reported by NASA, she was selected from among 36,000 applicants to serve as her nation's first astronaut. @angelillo_international_2012 Based on @angelillo_international_2012 She flew on Soyuz TMA-12 to the International Space Station (ISS) on April 8, 2008, returning to Earth 10 days later.
+Meanwhile based on @nasa_2012_international, Lee So Yeon is the first South Korean female astronaut to fly into space. Reported by NASA, she was selected from among 36,000 applicants to serve as her nation's first astronaut. @nasa_2012_international stated that she flew on Soyuz TMA-12 to the International Space Station (ISS) on April 8, 2008, returning to Earth 10 days later. 
 
 
 
@@ -574,12 +570,10 @@ astronauts %>%
   group_by(sex, military_civilian) %>%
   tally() %>%
   ggplot(aes(x = military_civilian, y = n, fill = sex)) +
-  geom_col() +
-  theme_minimal() +
-  theme( panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    legend.position = "none")+
+  geom_col()  + 
+  theme_linedraw()+
+  our_theme+
+  theme(legend.position = "none")+
   ylab("")+
   xlab("")+
   labs(tag = "(A)", title = "Military Civilian Background")
@@ -598,20 +592,11 @@ astronauts %>%
   tally() %>%
   ggplot(aes(x = fct_reorder(occupation,n), y = n, fill = sex)) +
   geom_col()+
-  theme_minimal() +
-  theme( panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank())+
+  theme_linedraw() +
+  our_theme+
   ylab("")+
   xlab("")+
   labs(tags="(B)", title = "Occupation Background")
-```
-
-```{r}
-astronauts %>%
-  filter(sex=="female") %>%
-  group_by(sex, occupation) %>%
-  tally()
 ```
 
 
