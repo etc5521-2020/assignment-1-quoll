@@ -23,6 +23,8 @@ library(tidyverse)
 library(dplyr)
 library(plotly)
 library(ggplot2)
+library(DT)
+library(htmltools)
 ```
 
 ```{r write-data, eval = FALSE}
@@ -58,6 +60,48 @@ Based on the purpose of finding the development of astronautical exploration, th
 The data which are used for analysing in this report are from the astronaut database. Because only one website could not contain comprehensive and up-to-date astronautic information. Therefore, this database was collected from NASA, Roscosmos, and fun-made websites, which includes information about the space mission before 15 January 2020. Furthermore, this data contains 24 different types of information about 1277 astronauts which are name, sex, year of birth, nationality, military status, the name and year of selection program, information about each mission implemented by astronaut such as year, title, ascend and decent shuttle names, duration of mission and extravehicular activity (EVAs). The version of data has been updated on 14 July 2020, which contains the astronautic information from 1961 to 2019. The data used in this report was read from the TidyTuesdayR package, and it has been saved in a new csv file called astronaut for later use.
 
 By browsing the whole dataset and using the glimpse function to observe the variables and the corresponding classes by R, this report decides to apply this dataset into analysing the development of the astronautic industry. Meanwhile, according to the observation, the report would try to use several important and useful variables to explore the development of the astronautic industry as much as possible, like the year, number, and duration of missions, proportion of space travelers, the number of extravehicular activity and the gender of astronauts. In addition, some missing values and inappropriate classes of variables have been found, which would be considered in the following analysing part.
+
+```{r}
+astronauts_var <- astronauts %>% select(-X)
+Variables <- astronauts_var %>% names()
+Class <- sapply(astronauts_var, class)
+Description <- c("ID",
+            "Number",
+            "Number within country",
+            "Full name",
+            "Name in original language",
+            "Sex",
+            "Year of birth",
+            "Nationality",
+            "Military status",
+            "Name of selection program",
+            "Year of selection program",
+            "Mission number",
+            "Total number of missions",
+            "Occupation",
+            "Mission year",
+            "The title of the mission",
+            "Name of ascend shuttle",
+            "Name of spacecraft used in orbit",
+            "Name of descend shuttle",
+            "Duration of mission in hours",
+            "Total duration of all missions in hours",
+            "Instances of EVA by mission",
+            "Duration of extravehicular activities during the mission",
+            "Total duration of all extravehicular activities in hours")
+
+tibble(Variables,Class,Description) %>%
+  datatable(class = 'cell-border stripe',
+          rownames = FALSE,
+          filter = 'top',
+          selection="multiple",
+          escape=FALSE,
+          options = list(pageLength = 5, sDom  = '<"top">lrt<"bottom">ip'),
+          caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: center;','Table 1: ',
+                    em('List of astronauts dataset variables description.')))
+
+```
+
 
 # Analysis and findings
 
@@ -276,6 +320,7 @@ gender <- astronauts %>%
 gender %>% 
   ggplot() + 
   geom_bar(aes(sex, fill = sex)) + 
+  scale_fill_manual(values=c("#f292e5","#9294f2"))+
   xlab("gender") + 
   ggtitle("Astronaut Gender Amount") +
   theme_linedraw()+
@@ -289,6 +334,7 @@ astronauts %>%
   select(year_of_mission, sex) %>% 
   ggplot() + 
   geom_bar(aes(x = year_of_mission, fill = sex), position = "fill") + 
+  scale_fill_manual(values=c("#f292e5","#9294f2"))+
   xlab("year") + 
   ggtitle("Global Gender Share") +
   theme_linedraw()+
@@ -297,7 +343,7 @@ astronauts %>%
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
-### Is there any female astronauts that have longer mission duration?
+## Is there any female astronauts that have longer mission duration than men?
 
 According to the \@ref(fig:gender) figure, we would like to explore more deeply the role of female astronauts in space missions. First of all, let us see how the female and male astronauts compare in total mission hour and extravehicular activity in space. If we look at Figure \@ref(fig:mission-hour-male-vs-female), two graphs show the comparison between the two. In general, female astronauts have less time than men, both on missions and extravehicular activity. The total number of days for men in (A) reaches almost 150,000 days while for women around 12,500 days. The same thing also happened to extravehicular activities (B) where the total days of women did not reach 100 days, but men were more than 500 days.
 
@@ -310,6 +356,7 @@ mission_hrs <- astronauts %>%
   # plot the data
   ggplot(aes(x = sex, y = day_of_mission, fill = sex)) +
   geom_col() +
+  scale_fill_manual(values=c("#f292e5","#9294f2"))+
   xlab("") +
   theme_linedraw() +
   # assign our theme
@@ -323,6 +370,7 @@ eva_hrs <- astronauts %>%
   # plot the data
   ggplot(aes(x = sex, y = day_of_mission, fill = sex)) +
   geom_col() +
+  scale_fill_manual(values=c("#f292e5","#9294f2"))+
   xlab("") +
   theme_linedraw() +
   # assign our theme
@@ -357,7 +405,9 @@ type_list <-  list(
   pad = list('r' = 0, 't' = 10, 'b' = 10),
   x = 1.2,
   y = 1.2,
-  buttons = button_list # assign button_list object to buttons
+  buttons = button_list, # assign button_list object to buttons
+  font=list(color = '#ffffff'),
+  activecolor = list(color="fff000")
 )
 
 # the theme of y axis
@@ -366,7 +416,8 @@ axy <- list(
   zeroline = FALSE,
   showline = TRUE,
   showticklabels = FALSE,
-  showgrid = FALSE
+  showgrid = FALSE,
+  color = '#ffffff'
 )
 # the theme of x axis
 axx <- list(
@@ -374,7 +425,8 @@ axx <- list(
   zeroline = FALSE,
   showline = TRUE,
   showticklabels = TRUE,
-  showgrid = FALSE
+  showgrid = FALSE,
+  color = '#ffffff'
 )
 
 # make scatter plot using plotly
@@ -389,7 +441,7 @@ plot_ly(
   # the point will be colored based on the sex
   color = ~sex,
   # assign color palletes
-  colors = c("#FF6666", "#00CCCC"),
+  colors = c("#f292e5", "#9294f2"),
   # assign the info when hovering the point
    text = ~ paste('</br> Name: ',name,
                   '</br> Nationality: ',nationality,
@@ -407,9 +459,13 @@ plot_ly(
 ) %>%
   # modify layout of the plot
   layout(updatemenus = list(type_list),
+         paper_bgcolor="#4e5a65",
+         plot_bgcolor ="#4e5a65",
          xaxis = axx,
          yaxis = axy,
-         title = "Every Single Astronaut's Time") %>%
+         title = "Every Single Astronaut's Time",
+         titlefont = list(color = '#ffffff'),
+         legend = list(font=list(color = '#ffffff')))%>%
   # hide the plotly ModeBar 
    config(displayModeBar = FALSE)
 
@@ -444,6 +500,7 @@ plot_mission <- astronauts %>%
     y = 0,
     yend = day_of_mission
   ), size = 1.2) +
+  scale_color_manual(values=c("#f292e5","#9294f2"))+
   theme_linedraw() +
   ggtitle("Space Mission")+
   our_theme + 
@@ -484,6 +541,7 @@ plot_eva <- astronauts %>%
     yend = day_of_mission
   ), size = 1.2) +
   theme_linedraw() +
+  scale_color_manual(values=c("#f292e5","#9294f2"))+
   ggtitle("Eva Activity")+
   our_theme +
   theme(legend.key = element_rect(fill = "#4e5a65"))+
@@ -571,6 +629,7 @@ astronauts %>%
   tally() %>%
   ggplot(aes(x = military_civilian, y = n, fill = sex)) +
   geom_col()  + 
+  scale_fill_manual(values=c("#f292e5"))+
   theme_linedraw()+
   our_theme+
   theme(legend.position = "none")+
@@ -592,6 +651,7 @@ astronauts %>%
   tally() %>%
   ggplot(aes(x = fct_reorder(occupation,n), y = n, fill = sex)) +
   geom_col()+
+  scale_fill_manual(values=c("#f292e5"))+
   theme_linedraw() +
   our_theme+
   ylab("")+
@@ -608,8 +668,7 @@ The astronautical exploration projects and missions experienced a increase trend
 
 Furthermore, the technologies of the space exploration also have developed. Through the spaceflight activities of space travelers exploration, the overall EVA number steadily increased ten years before, but it decreased in recent years. However, it does not mean the development of the spaceflights is regressing. Since the launch of the ISS program in 1998 (@NASA), the duration of almost each mission task is more than 480 hours.
 
-In addition, female astronauts also appear in the history of astronautical exploration. Although male astronauts are still the main force in the universe, the number of female astronauts trend to increase from 20th century. And the appear of female astronauts might change the history of space exploration and help human with the exploration.
-
+Besides, female astronauts also appear in the history of astronautical exploration. Although male astronauts dominate the number of astronauts who go on missions to space, actually some female astronauts have longer mission time than men. Whitson A. Peggy and Williams Sunita are the veteran female astronauts who are among the top fifteen astronauts who have the most extended mission and extravehicular activity over the year. Another fact that emerges is that more female astronauts come from civilians than from the military.
 
 # Acknowledgement
 
