@@ -3,7 +3,8 @@
 Team name: quoll
 
 Team members:
-
+* Jinhao Luo
+* Yawen Zhang
 * Brendi Ang
 * Putu Saputra
 
