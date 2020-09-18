@@ -48,6 +48,39 @@ our_theme <- theme(rect = element_rect(fill = "#4e5a65"),
         )
 ```
 
+```{css, echo=FALSE}
+body {
+  text-align: justify}
+
+caption {
+  color: white;
+}
+
+label {
+  color: white;
+}
+
+select{
+  background-color: #222;
+}
+
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+  color: #ffffff;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+  color: #fff !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  color: #ffff !important;
+}
+
+.form-control {
+  background-color: #2222;
+}
+```
+
+
 ```{r write-data, eval = FALSE}
 tuesdata <- tidytuesdayR::tt_load('2020-07-14')
 astronauts_origin <- tuesdata$astronauts
@@ -77,7 +110,7 @@ The report can be summarised into one primary question and three secondary quest
 
 The data set used for this analysis encompasses the information of all astronauts who participated in space missions before 15 January 2020. Each row (observation) corresponds to an astronaut's information for a given mission, spanning all the way to the first space mission in 1961 to the 15 January 2020. Some of the variables include:  
 
-The `astronauts` data set, along with its cleaning script are hosted on this [GitHub Link](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-14/readme.md) and is collected from NASA, Roscosmos, and fun-made websites. The variables used for this analysis are included in the table below:
+The `astronauts` data set, along with its cleaning script are hosted on this [GitHub Link](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-07-14/readme.md) and is collected from NASA, Roscosmos, and fun-made websites. @tidytuesday The variables used for this analysis are included in the table below:
 
 ```{r}
 # Pick variables used for analysis
@@ -119,22 +152,40 @@ Description <- c(
 
 
 tibble(Variables, Class, Description) %>%
-  datatable(class = 'cell-border stripe',
-          rownames = FALSE,
-          filter = 'top',
-          selection="multiple",
-          escape=FALSE,
-          options = list(pageLength = 6, sDom  = '<"top">lrt<"bottom">ip'),
-          caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: center;','Table 1: ',
-                    em('List of astronauts dataset variables description.')))
+  datatable(
+    class = 'cell-border stripe',
+    rownames = FALSE,
+    filter = 'top',
+    selection = "multiple",
+    escape = FALSE,
+    options = list(
+      pageLength = 5,
+      sDom  = '<"top">lrt<"bottom">ip',
+      initComplete = JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color': '#4e5a65', 'color': '#fff'});",
+        "}"
+      )
+    ),
+    caption = htmltools::tags$caption(
+      color = "#ffffff",
+      style = 'caption-side: bottom; text-align: center;',
+      'Table 1: ',
+      em('List of astronauts dataset variables description.')
+    )
+  ) %>% formatStyle(
+    c('Variables', 'Class', 'Description'),
+    color = 'white',
+    backgroundColor = '#4e5a65'
+  )
 ```
 
 
 # Analysis and Findings
 
-# Total Space Missions Embarked Over The Years
+## Total Space Missions Embarked Over The Years
 
-## Trends in Space Missions
+### Trends in Space Missions
 
 ```{r yearly-total-projects, fig.cap = "An overview of the total space missions each year. The x-axis denotes the year of mission and the y-axis shows the total number of missions. It can be observed that there is a steady increase in total space missions till year 2000 before it gradually decreased."}
 # Total projects Over the Years
@@ -194,7 +245,7 @@ With the developments in the medical, technological, and scientific fields, astr
 
 This has been made possible with advances in space technologies, which have led to the development of increasingly sophisticated space infrastructures, transport systems, and space probes. Naturally, these enhanced space assets and increased human knowledge will provide more avenues for different and greater opportunities for the space frontier. For instance, the first rudimentary International Space Station was launched in 1998 opened up extensive experience, research, and technology and enhanced infrastructure for other envisioned projects in support of human exploration and the development of space (@KrishenKumar2009ECTN). 
 
-## Lead Time Required for Astronaut Training
+### Lead Time Required for Astronaut Training
 
 ```{r first-missions, fig.height = 6, fig.cap = "The plot shows the total number of astronauts embarking on their first space mission for a given year. The y-axis shows the total astronauts count and the corresponding x-axis depicts the year of the mission. Contrary to the increase in the total durations in space missions in recent years, new astronauts embarking on space missions were rather stagnant due to an extended training time"}
 
@@ -221,7 +272,7 @@ astronauts %>%
 
 With the establishment of the International Space Station and a growing array of opportunities in space exploration, one would expect more new astronauts embarking on space missions. However, Figure \@ref(fig:first-missions) illustrates that the amount of new astronauts embarking in space missions does not reflect the progressive increase in space mission durations as observed in Figure \@ref(fig:yearly-mission-duration). This trend highlights the lead time required to train an astronaut through a basic and mission-specific training syllabus. On average, the induction program to be a fully qualified astronaut takes approximately 2 - 4 years, usually contingent on the astronaut's military status (@national2011preparing). Some research even suggested that the time commitment and additional skill sets of astronauts as analogous, despite the difference in the technical nature of training for these professionals (@ball2008surgeons).
 
-## Astronauts Across the Globe
+### Astronauts Across the Globe
 
 ```{r participating-countries, fig.cap = "The Plot shows the number of participating countries for space missions across times. The x-axis represents the year of mission while the y-axis shows the cumulative sum of participating countries. Participating countries surged in late 1970s and have been progressively increasing over the years."}
 # * Show map if possible
@@ -277,14 +328,43 @@ country_first_astronaut <- astronauts %>%
   summarise(`Year of Country's First Astronaut` = min(year_of_mission)) %>%
   arrange(`Year of Country's First Astronaut`) %>%
   rename(Nationality = nationality)
+
+country_first_astronaut %>%
+  datatable(
+    class = 'cell-border stripe',
+    rownames = FALSE,
+    filter = 'top',
+    selection = "multiple",
+    escape = FALSE,
+    options = list(
+      pageLength = 5,
+      sDom  = '<"top">lrt<"bottom">ip',
+      initComplete = JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color': '#4e5a65', 'color': '#fff'});",
+        "}"
+      )
+    ),
+    caption = htmltools::tags$caption(
+      color = "#ffffff",
+      style = 'caption-side: bottom; text-align: center;',
+      'Table 2: ',
+      em('List of country first astronaut')
+    )
+  ) %>% formatStyle(
+    c('Nationality', "Year of Country's First Astronaut"),
+    color = 'white',
+    backgroundColor = '#4e5a65'
+  )
+  
 ```
 
 The table above shows the year in which the country joined the world in space exploration, as mentioned above.
 
 
-# International Collaboration 
+## International Collaboration 
 
-## The Cold War Rivalry (1957 - 1991)
+### The Cold War Rivalry (1957 - 1991)
 
 ```{r single-country-wrangle, include = FALSE}
 single_country_missions <- astronauts %>%
@@ -348,7 +428,7 @@ The 'Cold War Rivalry' was a term to describe the animosity between the Soviet U
 
 Figure \@ref(fig:plot-single-countries) indicates this animosity in the relationship; In this cold war period (1957 - 1991), single country space missions were noticeably more during this period. In some 1964 and 1966, all space missions consisted only of single country missions. Over the years, nations recognised how international cooperation has the potential to provide significant benefits to all participants, particularly if managed well. 
 
-## International Collaboration Post Cold-War
+### International Collaboration Post Cold-War
 
 ```{r sample-wrangling, message = FALSE, include = FALSE}
 # Find missions with more than 1 astronaut
@@ -478,7 +558,7 @@ These emerging phenomenon of global cooperation in space missions be seen in Fig
 
 Over the years, nations saw the potential benefits of approaching space explorations as a mutually beneficial endeavour. For most cases, international collaboration is of paramount importance as they lack the budgetary resources to build new space infrastructures, transport systems and space probes to carry out their space exploration goals. On top of this, some other motivating factors of international cooperation include generating diplomatic prestige, enabling workforce stability and even increasing political sustainability (@broniatowski2006case).
 
-# Women performance in astronautical exploration
+## Women performance in astronautical exploration
 
 According to figure \@ref(fig:gender), while women have also appeared in space exploration, men have been the main force in this 49-year period. However, we cannot ignore the contribution of female astronaut in space exploration. @jacksona2019women indicated that women has preformed essential work in astronautical area since 19th century. Furthermore, @jacksona2019women also illustrated that the first women travelled into space was in 1963, and the first American female astronaut appeared in 1983. Female astronauts also contribute to the exploration same as male astronauts. 
 
@@ -515,7 +595,7 @@ astronauts %>%
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
-## Is there any female astronauts that have longer mission duration than men?
+### Is there any female astronauts that have longer mission duration than men?
 
 According to the \@ref(fig:gender) figure, we would like to explore more deeply the role of female astronauts in space missions. First of all, let us see how the female and male astronauts compare in total mission hour and extravehicular activity in space. If we look at Figure \@ref(fig:mission-hour-male-vs-female), two graphs show the comparison between the two. In general, female astronauts have less time than men, both on missions and extravehicular activity. The total number of days for men in (A) reaches almost 150,000 days while for women around 12,500 days. The same thing also happened to extravehicular activities (B) where the total days of women did not reach 100 days, but men were more than 500 days.
 
@@ -733,9 +813,8 @@ Peggy A. Whitson and Sunita L. Williams in Figure \@ref(fig:whitson-sunita), are
 @whiting_sunita_2016 explained that Sunita L Williams is a female astronaut selected by NASA in 1998 who has carried out two space missions Expeditions 14/15 and 32/33. Reported by @whiting_sunita_2016, now she is preparing for her third long-duration mission aboard the International Space Station. 
 
 ```{r whitson-sunita, fig.align='center', fig.cap=' **Left** : Peggy A. Whitson (Ph.D.), the U.S. record holder, placing eighth on the all-time space endurance list. **Right** : Sunita L. Williams, a veteran of two space missions Expeditions 14/15 and 32/33 (source:NASA)'}
-# library(png)
-# img <- readPNG("data/whitson-sunita.png")
-# grid::grid.raster(img)
+ img <- readPNG("data/whitson-sunita.png")
+ grid::grid.raster(img)
 ```
 
 Apart from Peggy and Sunita, there are many female astronauts from various countries who have carried out space missions. The rest can be seen in Table 3 below.
@@ -756,25 +835,42 @@ sketch = htmltools::withTags(table(
 ))
 
 astronauts %>%
-  filter(sex=="female") %>%
+  filter(sex == "female") %>%
   # group the data by name and summarised them by sex, nationality, and total hours
   group_by(name) %>%
-  summarize(sex = sex,
-            nationality = nationality,
-            total_hrs_sum = total_hrs_sum,
-            total_eva_hrs = total_eva_hrs) %>%
+  summarize(
+    sex = sex,
+    nationality = nationality,
+    total_hrs_sum = total_hrs_sum,
+    total_eva_hrs = total_eva_hrs
+  ) %>%
   unique() %>%
   # arrange from highest to lowest based on total hours
   arrange(desc(total_hrs_sum)) %>%
-  datatable(class = 'cell-border stripe',
-          container = sketch,
-          rownames = FALSE,
-          filter = 'top',
-          selection="multiple",
-          escape=FALSE,
-          options = list(pageLength = 5, sDom  = '<"top">lrt<"bottom">ip'),
-          caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: center;','Table 3: ',
-                    em('List of Female Astronauts.')))
+  datatable(
+    class = 'cell-border stripe',
+    container = sketch,
+    rownames = FALSE,
+    filter = 'top',
+    selection = "multiple",
+    escape = FALSE,
+    options = list(
+      pageLength = 5,
+      sDom  = '<"top">lrt<"bottom">ip',
+      initComplete = JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color': '#4e5a65', 'color': '#fff'});",
+        "}"
+      )
+    ),
+    caption = htmltools::tags$caption(style = 'caption-side: bottom; text-align: center;', 'Table 3: ',
+                                      em('List of Female Astronauts.'))
+  ) %>%
+  formatStyle(
+    c('name', 'sex', 'nationality', 'total_hrs_sum', 'total_eva_hrs'),
+    color = 'white',
+    backgroundColor = '#4e5a65'
+  )
 ```
 
 We want to see the background of the female astronaut in the dataset. In Figure \@ref(fig:figures-side) two graphs show a summary of the background of the female astronaut. In figure (A), astronauts with a civilian background dominate the military. A total of 106 came from civilian and 37 from the military.
