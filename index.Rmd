@@ -24,7 +24,11 @@ link-citations: yes
 [This assignment is for ETC5521 Assignment 1 by Team `r rmarkdown::metadata$team` comprising of `r knitr::combine_words(rmarkdown::metadata$author)`.]{style="color:#006DAE;"}
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE, cache=FALSE, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = FALSE, 
+                      cache=FALSE, 
+                      message=FALSE, 
+                      warning=FALSE,
+                      fig.align = 'left')
 
 library(tidyverse)
 library(dplyr)
@@ -215,7 +219,7 @@ Based on Figure \@ref(fig:yearly-total-projects), the total number of missions h
 Not to mention, Figure \@ref(fig:yearly-total-projects) shows a drastic decrease in space missions from 1985 to 1989. This is attributed to the Space Shuttle Challenger disaster, where the U.S. space shuttle broke apart 73 seconds into its flight, killing all seven crew members aboard (@challenger2019). For that reason, the Space Missions in the NASA space shuttle program were halted for two years, which caused the dramatic decline in space missions in 1986 - 1989.
 
 
-```{r yearly-mission-duration, fig.width = 8, fig.cap = "An overview of the total durations of all space missions for a given year. The x-axis represents the year of mission and the y-axis shows the distribution of the hours spent in each space mission. On an overall level, there is a gradual increase in the duration of space missions."}
+```{r yearly-mission-duration, fig.cap = "An overview of the total durations of all space missions for a given year. The x-axis represents the year of mission and the y-axis shows the distribution of the hours spent in each space mission. On an overall level, there is a gradual increase in the duration of space missions."}
 # Total Duration (in hours) per Year
 astronauts %>%
   ggplot(aes(x = year_of_mission,
@@ -503,7 +507,7 @@ sample_cmbs <- sample_cmbs %>%
          )
 ```
 
-```{r network-graph, echo = FALSE, message = FALSE, fig.cap = "This network graphs illustrates the international collaboration through a time line broken down into pre and post Cold War Rivalry. Nodes are split into 3 colours to denote astronauts from U.S., Russian and other countries. International collaboration are signified by closer nodes and less distinct colour groups. It can be observed that international collaaboration increased exponentially since the first space mission."}
+```{r network-graph, echo = FALSE, message = FALSE, fig.align = 'left', fig.height = 12, fig.width = 15, fig.cap = "This network graphs illustrates the international collaboration through a time line broken down into pre and post Cold War Rivalry. Nodes are split into 3 colours to denote astronauts from U.S., Russian and other countries. International collaboration are signified by closer nodes and less distinct colour groups. It can be observed that international collaaboration increased exponentially since the first space mission."}
 set.seed(10001) 
 
 sample_cmbs %>%
@@ -558,7 +562,7 @@ These emerging phenomenon of global cooperation in space missions be seen in Fig
 
 Over the years, nations saw the potential benefits of approaching space explorations as a mutually beneficial endeavour. For most cases, international collaboration is of paramount importance as they lack the budgetary resources to build new space infrastructures, transport systems and space probes to carry out their space exploration goals. On top of this, some other motivating factors of international cooperation include generating diplomatic prestige, enabling workforce stability and even increasing political sustainability (@broniatowski2006case).
 
-## Women performance in astronautical exploration
+## Women Performance In Astronautical Exploration
 
 According to figure \@ref(fig:gender), while women have also appeared in space exploration, men have been the main force in this 49-year period. However, we cannot ignore the contribution of female astronaut in space exploration. @jacksona2019women indicated that women has preformed essential work in astronautical area since 19th century. Furthermore, @jacksona2019women also illustrated that the first women travelled into space was in 1963, and the first American female astronaut appeared in 1983. Female astronauts also contribute to the exploration same as male astronauts. 
 
@@ -595,7 +599,7 @@ astronauts %>%
 
 Overall, female astronauts have started to appear frequently in the space exploration, and experienced a general increase tendency. However, female astronauts are still account for a low share compared with male astronauts. While, @jacksona2019women explained that the possibilities and need for more females in astronautical exploration have been considered in the worldwide nowadays. Female astronauts would trend to contribute more in the space exploration in the future, and more and more female might appear in the universe.
 
-### Is there any female astronauts that have longer mission duration than men?
+### Are there any female astronauts that have longer mission duration than men?
 
 According to the \@ref(fig:gender) figure, we would like to explore more deeply the role of female astronauts in space missions. First of all, let us see how the female and male astronauts compare in total mission hour and extravehicular activity in space. If we look at Figure \@ref(fig:mission-hour-male-vs-female), two graphs show the comparison between the two. In general, female astronauts have less time than men, both on missions and extravehicular activity. The total number of days for men in (A) reaches almost 150,000 days while for women around 12,500 days. The same thing also happened to extravehicular activities (B) where the total days of women did not reach 100 days, but men were more than 500 days.
 
@@ -803,7 +807,7 @@ plot_eva <- astronauts %>%
 
 From the interactive plot above, at a glance, we can see that there is a female astronaut who has a high enough mission time. Therefore, we will next present the 15 astronauts with the highest mission duration and spacewalk. In Figure \@ref(fig:astro-15) there are two plots A and B. Plot A shows the space mission while plot B shows extravehicular activity among astronauts. In Plot A, there is one female astronaut who is in ninth place, namely Peggy A. Whitson. Peggy has gone on space expeditions for a total of 665 days. Also, in plot B, we can see that Peggy is in fourth place in the spacewalk mission with a total time of 2.5 days. Another woman Astonot is Sunita L. Williams who is in tenth place. Sunita set out on a mission in 2006 and 2012 with a total extravehicular activity time of 2 days.
 
-```{r astro-15, fig.cap="The lollipop graph that shows fifteen top astronauts based on mission times and extravehicular activity. (A) Whitson Peggy is the only female astronauts that sit on big nine in longest mission time, (B) Whitson Peggy and William SUnita are the only female astronauts that have more extravehicular activity in top fifteen", out.width="100%", out.height="60%"}
+```{r astro-15, fig.width = 10, fig.height = 12, fig.cap="The lollipop graph that shows fifteen top astronauts based on mission times and extravehicular activity. (A) Whitson Peggy is the only female astronauts that sit on big nine in longest mission time, (B) Whitson Peggy and William SUnita are the only female astronauts that have more extravehicular activity in top fifteen", out.width="100%", out.height="60%"}
 # combined the plots side by side
 plot_mission + plot_eva + plot_layout(guides = "collect", heights = 100)
 ```
