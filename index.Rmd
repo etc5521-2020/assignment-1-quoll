@@ -5,6 +5,8 @@ team: quoll
 author:
   - Jinhao Luo
   - Yawen Zhang
+  - Brendi Ang
+  - Putu Saputra
 date: "`r Sys.Date()`"
 bibliography: references.bib
 biblio-style: apa
